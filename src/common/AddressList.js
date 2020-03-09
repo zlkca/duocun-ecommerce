@@ -13,14 +13,16 @@ export class AddressList extends React.Component{
     return (
       <div className="address-list">
       {
-        this.props.list.map(item => <AddressItem key={item._id} select={this.select} data={item}></AddressItem>)
+        this.props.list && this.props.list.length > 0 &&
+        this.props.list.map(item => <AddressItem key={item.placeId} select={this.select} item={item}></AddressItem>)
       }
       </div>
     );
   }
 
-  select(v){
-    this.props.select(v);
+  // item --- IAddress
+  select(item){ 
+    this.props.select(item);
     // this.setState({selected: v});
   }
 }

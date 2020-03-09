@@ -1,4 +1,4 @@
-import { Http, ResponseStatus } from '../API';
+import { Http } from '../API';
 
 export class LocationAPI {
   url = 'Locations';
@@ -16,11 +16,25 @@ export class LocationAPI {
     });
   }
 
-  search(keyword = null, fields = null) {
+  getSuggestAddressList(keyword = null, fields = null) {
     const http = new Http();
     return new Promise((resolve, reject) => {
-      const url = encodeURI(this.url + '/Places/' + keyword);
+      const url = encodeURI(this.url + '/suggest/' + keyword);
       http.get(url, null, fields).then(rsp => {
+        if (rsp.status === http.Status.OK.code) {
+          resolve(rsp.data);
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
+
+  getHistoryAddressList(query, fields = null) {
+    const http = new Http();
+    return new Promise((resolve, reject) => {
+      const path = this.url + '/history';
+      http.get(path, query, fields).then(rsp => {
         if (rsp.status === http.Status.OK.code) {
           resolve(rsp.data);
         } else {
