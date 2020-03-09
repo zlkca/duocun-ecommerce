@@ -1,0 +1,17 @@
+.title-row{
+  height: 15px;
+  padding: 15px;
+  border-bottom: 1px solid #888;
+}
+
+.category-list{
+  float: left;
+  width: 20%;
+  height: calc(100% - 60px);
+}
+
+.product-list{
+  float: left;
+  width: 80%;
+  height: calc(100% - 60px);
+}

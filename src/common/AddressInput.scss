@@ -1,0 +1,17 @@
+.addr-row{
+  padding-top: 10px;
+  height: 32px;
+}
+
+.back-btn, .clear-btn{
+  width: 20px;
+  float: left;
+  padding-top: 5px;
+}
+
+.input{
+  border: 1px solid #888;
+  float: left;
+  height: 28px;
+  width: calc(100% - 70px);
+}
