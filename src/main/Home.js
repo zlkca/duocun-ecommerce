@@ -8,9 +8,13 @@ import { AccountAPI } from '../account/API';
 import { LocationAPI } from '../location/API';
 
 export class Home extends React.Component{
+
+  historyLocations = [];
+  locationAPI = new LocationAPI();
+
   constructor(props){
     super(props);
-    this.state = {places: [], place: null, keyword: '', bAddressList: false};
+    this.state = {locations: [], address: null, keyword: '', bAddressList: false};
     this.onAddressInputChange = this.onAddressInputChange.bind(this);
     this.onAddressInputClear = this.onAddressInputClear.bind(this);
     this.onAddressListSelect = this.onAddressListSelect.bind(this);
@@ -18,14 +22,16 @@ export class Home extends React.Component{
 
   onAddressInputChange(keyword) {
     if(keyword){
-      this.setState({places: ['suggest 1', 'suggest 2'], place:null, keyword: keyword, bAddressList: true});
+      this.locationAPI.search(keyword, ['_id', 'location']).then(locations => {
+        this.setState({locations: locations, address:null, keyword: keyword, bAddressList: true});
+      });
     }else{
-      this.setState({places: ['history 1', 'history 2'], place:null, keyword: keyword, bAddressList: true});
+      this.setState({locations: this.historyLocations, address:null, keyword: keyword, bAddressList: true});
     }
   }
 
   onAddressInputClear(){
-    this.setState({places: ['history 1', 'history 2'], place:null, keyword: '', bAddressList: true});
+    this.setState({locations: this.historyLocations, address:null, keyword: '', bAddressList: true});
   }
 
   onAddressInputBack(){
@@ -33,7 +39,8 @@ export class Home extends React.Component{
   }
 
   onAddressListSelect(v){
-    this.setState({place: v, bAddressList: false});
+    const address = this.locationAPI.getAddressString(v.location);
+    this.setState({address: address, bAddressList: false});
   }
 
   render() {
@@ -60,11 +67,11 @@ export class Home extends React.Component{
         <AddressInput onChange={this.onAddressInputChange} 
           onClear={this.onAddressInputClear}
           onBack={this.onAddressInputBack} 
-          input={this.state.place? this.state.place : this.state.keyword}>
+          input={this.state.address? this.state.address : this.state.keyword}>
         </AddressInput>
 
         { this.state.bAddressList &&
-          <AddressList list={this.state.places} select={this.onAddressListSelect} selected={this.state.place}></AddressList>
+          <AddressList list={this.state.locations} select={this.onAddressListSelect} selected={this.state.address}></AddressList>
         }
         <DeliveryTimeSelect></DeliveryTimeSelect>
         <MerchantGrid merchants={merchants}></MerchantGrid>
@@ -78,7 +85,7 @@ export class Home extends React.Component{
 
     accountSvc.getCurrentAccount().then(account => {
       locationSvc.find({accountId: account._id},['_id', 'location']).then(locations => {
-        const loc = locations;
+        this.historyLocations = locations;
       });
     });
 

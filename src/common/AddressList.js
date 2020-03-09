@@ -11,9 +11,9 @@ export class AddressList extends React.Component{
 
   render(){
     return (
-      <div className="addr-list">
+      <div className="address-list">
       {
-        this.props.list.map(item => <AddressItem key={item} select={this.select} data={item}></AddressItem>)
+        this.props.list.map(item => <AddressItem key={item._id} select={this.select} data={item}></AddressItem>)
       }
       </div>
     );
