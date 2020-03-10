@@ -7,6 +7,8 @@ import { MerchantGrid } from '../merchant/MerchantGrid';
 import { AccountAPI } from '../account/API';
 import { LocationAPI } from '../location/API';
 
+import './Home.scss';
+
 // export interface IAddress{
 //   placeId: string;
 //   mainText: string;
@@ -79,7 +81,7 @@ export class Home extends React.Component {
     ];
 
     return (
-      <div>
+      <div class="page">
         <AddressInput onChange={this.onAddressInputChange}
           onClear={this.onAddressInputClear}
           onBack={this.onAddressInputBack}
