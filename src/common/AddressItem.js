@@ -12,8 +12,8 @@ export class AddressItem extends React.Component {
     return (
       <div class="list-item" onClick={this.select}>
         <div class="left-col">
-          <div class="text-md">{this.props.item.mainText}</div>
-          <div class="text-sm">{this.props.item.secondaryText}</div>
+          <div class="text-md first-row">{this.props.item.mainText}</div>
+          <div class="text-sm second-row">{this.props.item.secondaryText}</div>
         </div>
         <div class="right-col">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">

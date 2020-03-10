@@ -1,5 +1,5 @@
 $list-h: 46px;
-
+$border-color: #b1b1b1;
 .text-xs{
   font-weight: 200;
   font-size: 12px;
@@ -47,18 +47,26 @@ $list-h: 46px;
     padding: 15px 0px;
     height: $list-h;
     background: white;
-    border-bottom: solid 1px #ddd;
+    border-bottom: solid 1px $border-color;
+  }
+
+  .list-item:last-child{
+    border-bottom: none;
   }
 
   .left-col{
-    width: calc(100% - 50px);
+    width: calc(100% - 60px);
     padding-left: 15px;
     padding-right: 5px;
     float: left;
+
+    .first-row, .second-row{
+      padding: 3px;
+    }
   }
 
   .right-col{
-    width: 30px;
+    width: 40px;
     padding-left: 0px;
     padding-right: 0px;
     float: left;

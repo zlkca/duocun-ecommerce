@@ -6,7 +6,7 @@ $input-h: 38px;
 .address-list{
   position: absolute;
   top: $input-h + 15px;
-  width: calc(100% - 30px);
+  width: calc(100% - 22px);
   border: 1px solid $border-color;
   border-radius: $border-radius;
   overflow-y: scroll;

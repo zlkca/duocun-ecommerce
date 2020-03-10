@@ -24,6 +24,10 @@ class App extends React.Component {
       <div className="App">
         
         <Router>
+            <Route path="/food-delivery" component={() => {
+              window.location.href = "https://duocun.ca";
+              return null;
+            }} />
             <Route exact path="/" component={Home} />
             <Route path="/merchant/:id" component={Merchant} />
             <Route path="/order" component={Order} />

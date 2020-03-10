@@ -44,7 +44,7 @@ $border-radius: 3px;
 
   .clear-btn{
     float: left;
-    width: 30px;
+    width: $btn-w - 2px;
     border-left: none;
     border-bottom-right-radius: $border-radius;
     border-top-right-radius: $border-radius;
