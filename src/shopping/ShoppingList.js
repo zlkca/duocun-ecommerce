@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import ShoppingItem from './ShoppingItem';
 
 export class ShoppingList extends React.Component{
@@ -14,15 +15,13 @@ export class ShoppingList extends React.Component{
   }
 
   render(){
-    const products = [
-      {id: 1, name: 'P 1'}, 
-      {id: 2, name: 'P 2'},
-      {id: 2, name: 'P 3'}
-    ];
-
     return <div className="shopping-list">
           {
-            products.map(p => <ShoppingItem item={p}></ShoppingItem>)
+            this.props.products.map(p => 
+              <Link style={{ textDecoration: 'none' }} to={{pathname: "/delivery/" + p._id}} >
+                <ShoppingItem key={p._id} item={p}></ShoppingItem>
+              </Link>
+            )
           }
         </div>
   }

@@ -1,3 +1,6 @@
+$border-color: #ddd;
+$footer-h: 58px;
+
 .col{
   width: 25%;
   float: left;
@@ -6,8 +9,29 @@
 .footer{
   position: absolute;
   bottom: 0px;
-  border: 1px solid #888;
-  height: 30px;
+  border: 1px solid $border-color;
+  height: 58px;
   width: 100%;
-  padding: 15px 0px;
+  padding: 0px;
+
+  .btn-footer{
+    height: 100%;
+    
+    .col{
+      width: 33%;
+      height: 100%;
+      vertical-align: middle;
+      padding-top: 20px;
+    }
+  
+    .btn-row{
+      height: 100%;
+    }
+  
+    .price-col{
+      border-left:1px solid $border-color;
+      border-right:1px solid $border-color;
+    }
+  }
+
 }

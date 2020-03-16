@@ -1,0 +1,33 @@
+
+$border-color: #b1b1b1;
+$border-radius: 3px;
+$input-h: 38px;
+$quantity-w:148px;
+.delivery-item{
+  margin: 0px;
+}
+.date-list{
+  position: absolute;
+  top: $input-h + 15px;
+  width: calc(100% - 22px);
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  overflow-y: scroll;
+  max-height: 400px;
+
+  .date-col{
+    width: calc(100% - #{$quantity-w});
+  }
+  .quantity-col{
+    width: $quantity-w;
+  }
+}
+
+$cellphone: "(max-width:480px)";
+$mobile: "(max-width: 767px)";
+$tablet: "(min-width: 768px) and (max-width: 1199px)";
+$desktop: "(min-width: 1200px)";
+
+@media #{$mobile}{
+
+}

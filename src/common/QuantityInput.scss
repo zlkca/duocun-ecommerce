@@ -1,5 +1,7 @@
+$quantity-ctrl-w: 146px;
+
 .quantity-ctrl{
-  width: 150px;
+  width: $quantity-ctrl-w;
 }
 
 .increase-btn, .decrease-btn{

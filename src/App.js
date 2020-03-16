@@ -1,15 +1,18 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { BrowserRouter as Router, Link, Switch, Route } from 'react-router-dom';
+// import logo from './logo.svg';
 
-import { Home } from './main/Home';
-import { Merchant } from './merchant/Merchant';
+import 'bootstrap/dist/css/bootstrap.min.css';
+// import './common/Modal.scss';
+import './App.scss';
+
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+
+import Home from './main/Home';
+import Merchant from './merchant/Merchant';
 import { Order } from './order/Order';
-import { Footer } from './common/Footer';
 import { OrderHistory } from './order/OrderHistory';
 import { Account } from './account/Account';
-
+import { Delivery } from './shopping/Delivery';
 
 class App extends React.Component {
   constructor(props){
@@ -25,15 +28,22 @@ class App extends React.Component {
         
         <Router>
             <Route path="/food-delivery" component={() => {
-              window.location.href = "https://duocun.ca";
+              window.location.href = "http://localhost:5000"; // "https://duocun.ca";
               return null;
             }} />
             <Route exact path="/" component={Home} />
             <Route path="/merchant/:id" component={Merchant} />
             <Route path="/order" component={Order} />
-            <Route path="/history" component={OrderHistory} />
-            <Route path="/account" component={Account} />
-            <Footer select={this.select}></Footer>
+            <Route path="/delivery/:id" component={Delivery} />
+            <Route path="/history" component={() => {
+              window.location.href = "http://localhost:3001/history";// "https://duocun.ca";
+              return null;
+            }} />
+            <Route path="/account" component={() => {
+              window.location.href = "http://localhost:3001/account";// "https://duocun.ca";
+              return null;
+            }} />
+
         </Router>
         
       </div>

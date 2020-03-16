@@ -1,0 +1,32 @@
+$quantity-w: 40px;
+$price-w: 50px;
+
+  .charge-item-list{
+    padding: 0px;
+    margin: 0px;
+
+    .item-row{
+      padding-bottom: 3px;
+      padding-right: 4px;
+      width: 100%;
+    }
+
+    .product-col, .quantity-col, .price-col {
+      // padding-left: 0px;
+      // padding-right: 0px;
+      font-size: 13px;
+      // line-height: 14px;
+      // padding: 0px;
+      float: left;
+    }
+
+    .quantity-col{
+      width: $quantity-w;
+    }
+    .price-col{
+      width: $price-w;
+    }
+    .product-col{
+      width: calc(100% - #{$quantity-w} - #{$price-w});
+    }
+  }

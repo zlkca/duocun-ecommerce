@@ -44,11 +44,24 @@ export class LocationAPI {
     });
   }
 
+  query(accountId, placeId, address) {
+    const http = new Http();
+    return new Promise((resolve, reject) => {
+      http.get(this.url + '/query', {accountId, placeId, address}).then(rsp => {
+        if (rsp.status === http.Status.OK.code) {
+          resolve(rsp.data);
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
+
   getAddressString(location) {
     if (location) {
       const city = location.subLocality ? location.subLocality : location.city;
-      const province = this.toProvinceAbbr(location.province);
-      const streetName = this.toStreetAbbr(location.streetName);
+      const province = location.province? this.toProvinceAbbr(location.province) : '';
+      const streetName = location.streetName ? this.toStreetAbbr(location.streetName): '';
       return location.streetNumber + ' ' + streetName + ', ' + city + ', ' + province;
     } else {
       return '';

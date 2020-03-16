@@ -1,0 +1,197 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+$title-h: 50px;
+$item-height: 40px;
+
+$border-color: #ccc; // #b0b0b0;
+$text-color:#585858;//#212529
+$text-inverse-color:#fff;
+$primary-color:#003e7e;
+$primary-focus-color:#11759a;
+
+$title-color:#7c7c7c;
+$title-s-color:#414851;
+
+.title-xl{
+  font-family: "Roboto", "Microsoft Yahei", Helvetica, Arial, sans-serif;
+  font-size: 58px;
+  font-weight: 300;
+  line-height: 64px;
+  color: #8dbf41;//#9ca1a8;
+}
+
+.title-lg{
+  font-family: "Microsoft Yahei", "Roboto", Helvetica, Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 500;
+  color: #7c7c7c;
+}
+
+.title-bg{
+  font-family: "Microsoft Yahei", 'Raleway', sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 30px;
+  color: #414851;//#8dbf41;
+}
+
+.title-md{
+  font-family: "Microsoft Yahei",'Raleway', sans-serif;
+  font-size: 18px;
+  line-height: 30px;
+  font-weight: 400;
+  color:#7c7c7c;
+}
+
+.title-sm{
+  font-family: "Microsoft Yahei",'Raleway', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 12px;
+  color: $title-s-color;
+}
+
+.title-xs{
+  font-family: "Microsoft Yahei", 'Raleway', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 12px;
+  color: $title-s-color;
+}
+
+.label-md{
+  font-size:16px;
+  color:$text-color;
+}
+
+.label-sm{
+  font-size:12px;
+  color:$text-color;
+}
+
+.label-lg{
+  font-size:24px;
+  color:rgb(0, 0, 0);
+}
+
+.text-xs{
+  font-weight: 200;
+  font-size: 12px;
+  line-height: 12px;
+  font-family: Roboto, sans-serif;
+  color:#808080;
+}
+
+.text-sm{
+  text-align: left;
+  font-weight: 100;
+  font-size: 14px;
+  font-family: Roboto, sans-serif;
+  color:#808080;
+}
+
+.text-md{
+  text-align: left;
+  font-family: Roboto, sans-serif;
+  font-size:16px;
+  font-weight:300;
+  color:rgb(50,50,50);
+}
+
+.text-bg{
+  font-size:18px;
+  font-family: Roboto, sans-serif;
+  color:rgb(34, 34, 34);
+}
+
+.text-lg{
+ font-family: Roboto, sans-serif;
+ font-size:24px;
+ font-weight:300;
+ color:#585858;
+}
+
+input, input[type="text"], input[type="password"], textarea, select{
+  width:100%;
+  border: 1px solid #b1b1b1;
+  padding: 10px;
+  color: #212529;//#8d939b;
+
+  background: transparent;
+  outline: none;
+
+  margin: 0;
+  font-weight: 400;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+  display:block;
+
+  //-webkit-appearance: none; // remove safari inner shadow
+}
+
+textarea {
+  resize: none;
+  overflow: auto;
+  height: 80px;
+}
+
+input, select {
+  height: $item-height;
+}
+
+input[type="checkbox"], input[type="radio"] {
+  margin-top:3px;
+  margin-right:3px;
+  width:18px;
+  height:18px;
+}
+
+
+.modal-dialog{
+  margin: 10px;
+  width: calc(100% - 20px);
+}
+
+.title-row{
+  height: $title-h;
+  padding: 15px;
+  border-bottom: 1px solid $border-color;
+}

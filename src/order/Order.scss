@@ -1,0 +1,120 @@
+$label-w: 70px;
+$label-color: #333;
+$text-color: #888;
+$border-color: #ccc;
+
+.page-body{
+  padding: 10px;
+}
+
+.left-side{
+  width: 68%;
+  float: left;
+}
+
+.right-side{
+  width: 32%;
+  float: left;
+}
+
+.contact{
+  padding: 0px;
+  height: 35px;
+}
+
+.address, .phone{
+  margin: 0px;
+  width: 100%;
+  font-weight: 500;
+}
+
+.label{
+  font-size: 13px;
+  font-weight: 500;
+  width: $label-w;
+  float: left;
+  text-align: left;
+  color: $label-color;
+}
+
+.text{
+  width: calc(100% - #{$label-w});
+  float: left;
+  text-align: left;
+  color: $text-color;
+}
+
+.merchant {
+  margin: 0px;
+  width: 100%;
+  text-align: left;
+}
+
+.payment-label{
+  padding-bottom: 5px;
+}
+
+/**
+ * The CSS shown here will not be introduced in the Quickstart guide, but shows
+ * how you can use CSS to style your Element's container.
+ */
+ .StripeElement {
+  box-sizing: border-box;
+
+  height: 40px;
+
+  padding: 10px 12px;
+
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-color: white;
+
+  box-shadow: 0 1px 3px 0 #e6ebf1;
+  -webkit-transition: box-shadow 150ms ease;
+  transition: box-shadow 150ms ease;
+}
+
+.StripeElement--focus {
+  box-shadow: 0 1px 3px 0 #cfd7df;
+}
+
+.StripeElement--invalid {
+  border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+  background-color: #fefde5 !important;
+}
+
+#card-element{
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+
+
+.warning-block{
+  margin-top: 10px;
+  margin-left: 0px;
+  margin-right: 0px;
+
+  .text-warning{
+    color: #d41a09 !important;
+    padding-bottom: 5px;
+  }
+}
+
+.notes-block{
+  margin-left: 0px;
+  margin-right: 0px;
+  padding: 10px 0px;
+  margin: 0px;
+  .row{
+    margin: 0px;
+    padding: 0px;
+  }
+  textarea{
+    border-color: $border-color;
+    border-radius: 3px;
+  }
+}
