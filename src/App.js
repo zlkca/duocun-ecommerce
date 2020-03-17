@@ -36,7 +36,7 @@ class App extends React.Component {
             <Route path="/merchant/:id" component={Merchant} />
             <Route path="/order" component={Order} />
             <Route path="/delivery/:id" component={Delivery} />
-            <Route path="/history" component={OrderHistory} />
+            <Route path="/history/:accountId" component={OrderHistory} />
             <Route path="/account" component={Account} />
             {/* <Route path="/history" component={() => {
               window.location.href = "http://localhost:3001/history";// "https://duocun.ca";

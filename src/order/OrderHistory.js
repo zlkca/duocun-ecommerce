@@ -15,7 +15,6 @@ import './OrderHistory.scss';
 import { Footer } from '../common/Footer';
 import { OrderHistoryItem } from './OrderHistoryItem';
 import { OrderAPI } from './API';
-// import { ProductAPI } from '../product/API';
 import { AccountAPI } from '../account/API';
 
 const Menu = {
@@ -25,17 +24,16 @@ const Menu = {
 }
 
 export class OrderHistory extends React.Component {
-  // productSvc = new ProductAPI();
   orderSvc = new OrderAPI();
   // paymentSvc = new PaymentAPI();
   accountSvc = new AccountAPI();
+  accountId;
 
   constructor(props) {
     super(props);
-    // const loactionSvc = new LocationAPI();
-    // const s = store.getState();
-    // const location = s.location;
-    // const merchant = s.merchant;
+
+    this.accountId = props.match.params.accountId;  
+
     this.state = {
       account: '',
       lang: 'zh',
@@ -44,7 +42,7 @@ export class OrderHistory extends React.Component {
       // location,
       // paymentMethod: PaymentMethod.WECHAT,
       // phone: '123456',
-      // address: loactionSvc.getAddressString(location),
+      // address: loactionSvc.toAddressString(location),
       // items: [{ productName: '土豆', quantity: 3, price: 0.5 }],
       // stripe: null,
       // card: null,
@@ -97,10 +95,7 @@ export class OrderHistory extends React.Component {
             }
             </div>
           }
-          
-   
-
-      </div >
+      </div>
       <Footer select={this.select} type="menu" menu={Menu.ORDER_HISTORY}></Footer>
     </div >
     )
@@ -111,14 +106,12 @@ export class OrderHistory extends React.Component {
   }
 
   componentDidMount() {
-    // if (this.state.merchant) {
-    //   const merchantId = this.state.merchant._id;
-    //   this.productSvc.quickFind({ merchantId }, ['_id', 'name', 'price']).then(products => {
-    //     this.accountSvc.getCurrentAccount().then(account => {
-    //       this.setState({ products, account });
-    //     });
-    //   });
-    // }
+    if (this.accountId) {
+      const accountId = this.accountId;
+      this.orderSvc.quickFind({ clientId: accountId }).then(orders => {
+        this.setState({ orders });
+      });
+    }
   }
 
   // cart --- [{productId, deliveries: [{date, time, price, cost, quantity}] }]

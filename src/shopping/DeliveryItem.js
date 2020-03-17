@@ -47,13 +47,15 @@ class DeliveryItem extends React.Component{
     const product = this.props.product;
     const delivery = this.props.delivery;
     this.props.addToCart({
-      productId: product._id, 
+      productId: product._id,
+      productName: product.name, 
       date: delivery.date,
       time: delivery.time,
       quantity: oldQuantity,
       price: delivery.price,
       cost: delivery.cost,
     });
+    this.props.onChange();
   }
 
   // actions --- removeFromCart
@@ -62,30 +64,33 @@ class DeliveryItem extends React.Component{
     const product = this.props.product;
     const delivery = this.props.delivery;
     this.props.removeFromCart({
-      productId: product._id, 
+      productId: product._id,
+      productName: product.name, 
       date: delivery.date,
       time: delivery.time,
       quantity: oldQuantity,
       price: delivery.price,
       cost: delivery.cost,
     });
+    this.props.onChange();
   }
 
   // actions --- removeFromCart
   // item - eg. {productId:x, date:'2020-03-10', time:'14:00', quantity: 2}
   change(quantity){
-    this.props.onChange(this.props.spec, quantity);
-
     const product = this.props.product;
     const delivery = this.props.delivery;
     this.props.changeQuantity({
-      productId: product._id, 
+      productId: product._id,
+      productName: product.name, 
       date: delivery.date,
       time: delivery.time,
       quantity,
       price: delivery.price,
       cost: delivery.cost,
     });
+
+    this.props.onChange();
   }
 }
 

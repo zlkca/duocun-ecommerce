@@ -57,7 +57,7 @@ export class LocationAPI {
     });
   }
 
-  getAddressString(location) {
+  toAddressString(location) {
     if (location) {
       const city = location.subLocality ? location.subLocality : location.city;
       const province = location.province? this.toProvinceAbbr(location.province) : '';

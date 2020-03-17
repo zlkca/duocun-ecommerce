@@ -32,7 +32,6 @@ class Home extends React.Component {
   merchantSvc = new MerchantAPI();
   path = '';
   code = '';
-  account;
 
   constructor(props) {
     super(props);
@@ -45,7 +44,7 @@ class Home extends React.Component {
     //   }
     // }
 
-    this.state = { addresses: [], address: null, keyword: '', bAddressList: false, merchants: [] };
+    this.state = { account: '', addresses: [], address: null, keyword: '', bAddressList: false, merchants: [] };
     this.onAddressInputChange = this.onAddressInputChange.bind(this);
     this.onAddressInputClear = this.onAddressInputClear.bind(this);
     this.onAddressListSelect = this.onAddressListSelect.bind(this);
@@ -92,7 +91,7 @@ class Home extends React.Component {
   }
 
   render() {
-
+    const account = this.state.account;
     return (
       <div className="page">
         <div className="page-content">
@@ -107,14 +106,17 @@ class Home extends React.Component {
           }
           <MerchantList merchants={this.state.merchants}></MerchantList>
         </div>
-        <Footer select={this.select} type="menu" menu={Menu.HOME}></Footer>
+        {
+
+          account &&
+          <Footer select={this.select} type="menu" menu={Menu.HOME} accountId={account? account._id : '' }></Footer>
+        }
       </div>
     );
   }
 
   login(code) {
     return new Promise((resolve, reject) => {
-
       this.accountSvc.getCurrentAccount().then(account => {
         if (account) {
           resolve(account);
@@ -142,6 +144,7 @@ class Home extends React.Component {
     const cs = a.split('&')[0];
     const code = cs.split('=')[1];
     this.login(code).then(account => {
+      this.setState({account});
       if (account) {
         this.locationSvc.getHistoryAddressList({ accountId: account._id }).then(addresses => {
           this.historyLocations = addresses;

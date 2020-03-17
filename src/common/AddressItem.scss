@@ -1,6 +1,7 @@
-$list-h: 46px;
-$border-color: #b1b1b1;
+@import '../base';
 
+$list-h: 46px;
+// $border-color: #b1b1b1;
   // .list-item{
   //   border: 1px solid #aaa;
   //   height: 480px;
@@ -11,8 +12,9 @@ $border-color: #b1b1b1;
     margin: 0px;
     padding: 15px 0px;
     height: $list-h;
-    background: white;
+    background: $bg-color;
     border-bottom: solid 1px $border-color;
+    z-index: 5000;
   }
 
   .list-item:last-child{
@@ -24,7 +26,7 @@ $border-color: #b1b1b1;
     padding-left: 15px;
     padding-right: 5px;
     float: left;
-
+    background: white;
     .first-row, .second-row{
       padding: 3px;
     }

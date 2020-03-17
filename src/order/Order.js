@@ -12,8 +12,6 @@ import { PaymentMethodSelect } from '../common/PaymentMethodSelect';
 import { ChargeItemList } from './ChargeItemList';
 import { LocationAPI } from '../location/API';
 import { PaymentAPI } from '../payment/API';
-
-import { CardElement, useStripe, useElements, StripeProvider } from '@stripe/react-stripe-js';
 import { InjectedCheckoutForm } from '../payment/CreditCardForm';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
@@ -30,13 +28,17 @@ export class Order extends React.Component {
   orderSvc = new OrderAPI();
   paymentSvc = new PaymentAPI();
   accountSvc = new AccountAPI();
-
+  groups;
+  summary;
   constructor(props) {
     super(props);
     const loactionSvc = new LocationAPI();
     const s = store.getState();
     const location = s.location;
     const merchant = s.merchant;
+    const chargeItems = this.getChargeItems(s.cart); // group --- [{date, time, items: [{productId, quantity, price, cost}] }]
+    this.groups = this.getOrderGroups(s.cart);
+    this.summary = this.getSummary(this.groups, 0);
     this.state = {
       account: '',
       lang: 'zh',
@@ -46,8 +48,8 @@ export class Order extends React.Component {
       paymentMethod: PaymentMethod.CREDIT_CARD,
       phone: '',
       note: '',
-      address: location ? loactionSvc.getAddressString(location) : '',
-      items: [{ productName: '土豆', quantity: 3, price: 0.5 }],
+      address: location ? loactionSvc.toAddressString(location) : '',
+      chargeItems,
       stripe: null,
       card: null,
       order: null,
@@ -61,6 +63,7 @@ export class Order extends React.Component {
     this.handleShow = this.handleShow.bind(this);
     this.onClosePhoneVerifyDialog = this.onClosePhoneVerifyDialog.bind(this);
     this.onSelectPaymentMethod = this.onSelectPaymentMethod.bind(this);
+    this.getChargeItems = this.getChargeItems.bind(this);
   }
 
   handleClose() {
@@ -75,63 +78,65 @@ export class Order extends React.Component {
   }
 
   render() {
-    const charge = {
-      price: 10, deliveryCost: 0, deliveryDiscount: 0,
-      tax: 0.13 * 10, tips: 0, total: Math.round(10 * 1.13 / 100) * 100, overRangeCharge: 0, balance: 1,
-      payable: 9
-    };
+    const balance = Math.round(this.state.account.balance * 100) / 100;
+    const payable = Math.round((balance >= this.summary.total ? 0 : this.summary.total - balance) * 100) / 100;
+    const charge = { ...this.summary, ...{ payable }, ...{ balance } };
+    const merchant = this.state.merchant;
     return (
       <div className="page">
         <div className="title-row">订单确认</div>
         <div className="page-body">
-
-          <div className="contact">
-            <div className="row phone">
-              <div className="label">联系电话</div>
-              <div className="text">{this.state.phone}</div>
+          <div className="row scroll-frame">
+            <div className="contact">
+              <div className="row phone">
+                <div className="label">联系电话</div>
+                <div className="text">{this.state.phone}</div>
+              </div>
+              <div className="row address">
+                <div className="label">送货地址</div>
+                <div className="text">{this.state.address}</div>
+              </div>
+              <div className="row merchant">
+                <div className="label">商家</div>
+                <div className="text">{merchant.name}</div>
+              </div>
             </div>
-            <div className="row address">
-              <div className="label">送货地址</div>
-              <div className="text">{this.state.address}</div>
+            {/* <div className="row title-md merchant">Truly Fresh</div> */}
+
+            <div className="left-side">
+              <ChargeItemList items={this.state.chargeItems}></ChargeItemList>
             </div>
-          </div>
-          <div className="row title-md merchant">Truly Fresh</div>
-          <div className="left-side">
-            <ChargeItemList items={this.state.items}></ChargeItemList>
-          </div>
-          <div className="right-side">
-            <Charge charge={charge}></Charge>
-          </div>
-
-
-          {
-            this.state.paymentMethod != PaymentMethod.PREPAY ?
-            <div>
-              <div className="label payment-label">付款方式</div>
-              <PaymentMethodSelect onSelect={this.onSelectPaymentMethod}></PaymentMethodSelect>
-              {
-                this.state.paymentMethod === PaymentMethod.CREDIT_CARD &&
-                <Elements stripe={stripePromise}>
-                  <InjectedCheckoutForm onChange={this.onCreditCardChange} />
-                </Elements>
-              }
+            <div className="right-side">
+              <Charge charge={charge}></Charge>
             </div>
-            :
-            <div className="prepay">用余额付款</div>
-          }
+            {
+              this.state.paymentMethod != PaymentMethod.PREPAY ?
+                <div>
+                  <div className="label payment-label">付款方式</div>
+                  <PaymentMethodSelect onSelect={this.onSelectPaymentMethod}></PaymentMethodSelect>
+                  {
+                    this.state.paymentMethod === PaymentMethod.CREDIT_CARD &&
+                    <Elements stripe={stripePromise}>
+                      <InjectedCheckoutForm onChange={this.onCreditCardChange} />
+                    </Elements>
+                  }
+                </div>
+                :
+                <div className="prepay">用余额付款</div>
+            }
 
-
-          <div className="row warning-block">
-            <div className="label-sm text-warning">*如果你在公寓楼或办公楼请在大楼门口取件，我们无法上楼。</div>
-            <div className="label-sm text-warning">**请将您的电话保持在接听状态，以便联系。</div>
-          </div>
-
-          <div className="notes-block">
-            <div className="row label-sm">
-              <span>备注</span>:
+            <div className="row warning-block">
+              <div className="label-sm text-warning">*如果你在公寓楼或办公楼请在大楼门口取件，我们无法上楼。</div>
+              <div className="label-sm text-warning">**请将您的电话保持在接听状态，以便联系。</div>
             </div>
-            <div className="row">
-              <textarea name="note" value={this.state.note}></textarea>
+
+            <div className="notes-block">
+              <div className="row label-sm">
+                <span>备注</span>:
+            </div>
+              <div className="row">
+                <textarea name="note" value={this.state.note}></textarea>
+              </div>
             </div>
           </div>
         </div>
@@ -181,20 +186,20 @@ export class Order extends React.Component {
       deliverDate,
       deliverTime,
       type: OrderType.GROCERY,
-      status, 
+      status,
       paymentStatus,
       paymentMethod,
       note,
       price: Math.round(charge.price * 100) / 100,
       cost: Math.round(charge.cost * 100) / 100,
-      deliveryCost: Math.round(merchant.deliveryCost * 100) / 100,
-      deliveryDiscount: Math.round(merchant.deliveryCost * 100) / 100,
+      deliveryCost: Math.round(charge.deliveryCost * 100) / 100,
+      deliveryDiscount: Math.round(charge.deliveryCost * 100) / 100,
       groupDiscount: Math.round(charge.groupDiscount * 100) / 100,
       overRangeCharge: Math.round(charge.overRangeCharge * 100) / 100,
       total: Math.round(charge.total * 100) / 100,
       tax: Math.round(charge.tax * 100) / 100,
       tips: Math.round(charge.tips * 100) / 100,
-      defaultPickupTime: account.pickup
+      defaultPickupTime: account.pickup ? account.pickup : ''
     };
 
     return order;
@@ -205,10 +210,7 @@ export class Order extends React.Component {
       const merchantId = this.state.merchant._id;
       this.productSvc.quickFind({ merchantId }, ['_id', 'name', 'price']).then(products => {
         this.accountSvc.getCurrentAccount().then(account => {
-          
-          const groups = this.getOrderGroups(this.state.cart);
-          const summary = this.getSummary(groups);
-          const amount = summary.total;
+          const amount = this.summary.total;
           const paymentMethod = (account.balance >= amount) ? PaymentMethod.PREPAY : this.state.paymentMethod;
 
           this.setState({ products, account, paymentMethod });
@@ -217,7 +219,25 @@ export class Order extends React.Component {
     }
   }
 
-  // cart --- [{productId, deliveries: [{date, time, price, cost, quantity}] }]
+  // cart --- [{productId, productName, deliveries: [{date, time, price, cost, quantity}] }]
+  // return --- {date, time, productId, productName, quantity, price, cost}
+  getChargeItems(groups) { // group by date time
+    const chargeItems = [];
+    groups.map(it => { //  {productId, productName, deliveries:[{date, time, price, quantity }]}
+      it.deliveries.map(d => {
+        chargeItems.push({ ...d, productName: it.productName });
+        // const chargeItem = chargeItems.find(t => t.date === d.date && t.time === d.time);
+        // if (chargeItem) {
+        //   chargeItem.items.push({ productId: it.productId, productName: it.productName, quantity: d.quantity, price: d.price, cost: d.cost });
+        // } else {
+        //   chargeItems.push({ date: d.date, time: d.time, items: [{ productId: it.productId, productName: it.productName, quantity: d.quantity, price: d.price, cost: d.cost }] })
+        // }
+      });
+    });
+    return chargeItems;
+  }
+
+  // cart --- [{productId, productName, deliveries: [{date, time, price, cost, quantity}] }]
   // return --- [{date, time, items: [{productId, quantity, price, cost}] }]
   getOrderGroups(groups) { // group by date time
     const orders = [];
@@ -234,32 +254,47 @@ export class Order extends React.Component {
     return orders;
   }
 
+  // groups --- [{date, time, items: [{productId, quantity, price, cost}] }]
   getSummary(groups, overRangeCharge) {
-    let price = 0;
-    let cost = 0;
+    let totalPrice = 0;
+    let totalCost = 0;
+    let totalTax = 0;
+    let totalTips = 0;
+    let totalOverRangeCharge = 0;
+    let total = 0;
+
+    const tips = 0;
+    const groupDiscount = 0;
 
     if (groups && groups.length > 0) {
-      groups.map(group => {
-        group.items.map(x => {
+      groups.map(order => {
+        let price = 0;
+        let cost = 0;
+        order.items.map(x => {
           price += x.price * x.quantity;
           cost += x.cost * x.quantity;
         });
+        let tax = Math.ceil(price * 13) / 100;
+        let subTotal = (price + tax + tips - groupDiscount + overRangeCharge);
+
+        totalPrice += total;
+        totalCost += cost;
+        totalTax += tax;
+        totalOverRangeCharge += overRangeCharge;
+        total += subTotal;
       });
     }
 
-    const subTotal = price + 0; // merchant.deliveryCost;
-    const tax = Math.ceil(subTotal * 13) / 100;
-    const tips = 0;
-    const groupDiscount = 0;
-    const overRangeTotal = Math.round(overRangeCharge * 100) / 100;
-
     return {
-      price, cost, tips, tax,
-      overRangeCharge: overRangeTotal,
+      price: Math.round(totalPrice * 100) / 100,
+      cost: Math.round(totalCost * 100) / 100,
+      tips: Math.round(totalTips * 100) / 100,
+      tax: Math.round(totalTax * 100) / 100,
+      overRangeCharge: Math.round(totalOverRangeCharge * 100) / 100,
       deliveryCost: 0, // merchant.deliveryCost,
       deliveryDiscount: 0, // merchant.deliveryCost,
       groupDiscount, // groupDiscount,
-      total: price + tax + tips - groupDiscount + overRangeTotal
+      total: Math.round(total * 100) / 100
     };
   }
 
@@ -300,12 +335,11 @@ export class Order extends React.Component {
     const location = this.state.location;
     const paymentMethod = this.state.paymentMethod;
     const note = this.state.note;
-    const groups = this.getOrderGroups(this.state.cart);
-    const summary = this.getSummary(groups);
-    const amount = summary.price;
+    const amount = this.summary.total;
     const orders = [];
-    groups.map(group => {
-      const charge = this.getCharge(group);
+    const overRangeCharge = 0;
+    this.groups.map(group => {
+      const charge = this.getCharge(group, overRangeCharge);
       const order = this.createOrder(account, merchant, group.items, location, group.date, group.time, charge, note, paymentMethod);
       orders.push(order);
     });
@@ -326,7 +360,7 @@ export class Order extends React.Component {
           } else {
             this.paymentSvc.payByCreditCard(account._id, account.username, newOrders, amount, note).then(rsp => {
               if (rsp && rsp.err === PaymentError.NONE) {
-                window.location.href = 'http://localhost:3001/history';
+                this.props.history.push('/history/' + this.state.account._id);
               } else {
                 // show error;
               }
@@ -345,8 +379,9 @@ export class Order extends React.Component {
         });
       } else { // PaymentMethod.CASH || PaymentMethod.PREPAY
         // this.orderSvc.addDebit(newOrders).then(rsp => {
-        window.location.href = 'http://localhost:3001/history';
+        // window.location.href = 'http://localhost:3000/history';
         // });
+        this.props.history.push('/history/' + this.state.account._id);
       }
     });
   }

@@ -7,40 +7,41 @@ $menu-w: 33.3%;
   float: left;
 }
 
-.footer{
-  position: absolute;
-  bottom: 0px;
-  border: 1px solid $border-color;
-  height: 58px;
-  width: 100%;
-  padding: 0px;
+// .footer{
+//   position: absolute;
+//   bottom: 0px;
+//   border: 1px solid $border-color;
+//   height: 58px;
+//   width: 100%;
+//   padding: 0px;
 
-  .btn-footer{
-    height: 100%;
+//   .btn-footer{
+//     height: 100%;
     
-    .col{
-      width: 33%;
-      height: 100%;
-      vertical-align: middle;
-      padding-top: 20px;
-    }
+//     .col{
+//       width: 33%;
+//       height: 100%;
+//       vertical-align: middle;
+//       padding-top: 20px;
+//     }
   
-    .btn-row{
-      height: 100%;
-    }
+//     .btn-row{
+//       height: 100%;
+//     }
   
-    .price-col{
-      border-left:1px solid $border-color;
-      border-right:1px solid $border-color;
-    }
-  }
-}
+//     .price-col{
+//       border-left:1px solid $border-color;
+//       border-right:1px solid $border-color;
+//     }
+//   }
+// }
 
 
 .bottom-nav-menus{
   display: flex;
   padding: 9px 0px;
   margin: 0px;
+  background: $bg-color;
 
   .menu{
     width: $menu-w;
@@ -68,5 +69,25 @@ $menu-w: 33.3%;
 .active{
   .icon-text{
     color: $primary-color;// #0F9D58;// #F4B400;
+  }
+}
+
+.amount-col{
+  text-align: center;
+  border-right: 1px solid $border-color;
+  padding-top: 15px;
+  width: calc(100% - #{$bottom-btn-w});
+}
+
+.btn-col{
+  vertical-align: middle;
+  text-align: center;
+  color: $inverse-font-color;
+  background: $primary-color;
+  float: left;
+  text-align: center;
+  padding-top: 15px;
+  a{
+    color: $inverse-font-color;
   }
 }

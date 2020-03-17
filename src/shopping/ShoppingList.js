@@ -18,8 +18,8 @@ export class ShoppingList extends React.Component{
     return <div className="shopping-list">
           {
             this.props.products.map(p => 
-              <Link style={{ textDecoration: 'none' }} to={{pathname: "/delivery/" + p._id}} >
-                <ShoppingItem key={p._id} item={p}></ShoppingItem>
+              <Link key={p._id} style={{ textDecoration: 'none' }} to={{pathname: "/delivery/" + p._id}} >
+                <ShoppingItem item={p}></ShoppingItem>
               </Link>
             )
           }

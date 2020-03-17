@@ -24,7 +24,7 @@ export class CreditCardForm extends React.Component {
       type: 'card',
       card: elements.getElement(CardElement),
     }).then(r => {
-      
+
     });
   };
 
@@ -51,9 +51,6 @@ export class CreditCardForm extends React.Component {
     return (
       <form onSubmit={this.handleSubmit}>
         <CardElement onChange={this.change} options={options}/>
-        {/* <button type="submit" disabled={!stripe}>
-          Pay
-        </button> */}
       </form>
     );
   }

@@ -1,59 +1,139 @@
+@import '../base';
 
-//       <div className="col-5 text-sm total-col" *ngIf= "order.total" >
-//       <div className="row">
-//         <div className="col-12">
-//           <div className="title-xs">
-//             <span i18n="@@ProductTotal">ProductTotal</span>:</div>
-//           <div className="text-xs">&nbsp;${{ order.price | number : '1.2-2'}}</div>
-//         </div>
-//         <div className="col-12" *ngIf="order.type === OrderTypes.FOOD_DELIVERY">
-//         <div className="title-xs">
-//           <span i18n="@@DeliveryFee">Delivery Fee</span>:</div>
-//         <div className="text-xs">&nbsp;${{ order.deliveryCost | number : '1.2-2'}}</div>
-//       </div>
-//       <div className="col-12" * ngIf="order.type === OrderTypes.FOOD_DELIVERY" >
-//         <div className="title-xs">
-//           <span i18n="@@Subtotal">Subtotal</span>:</div>
-//         <div className="text-xs">&nbsp;${{ order.price + order.deliveryCost | number : '1.2-2'}}</div>
-//       </div >
-//       <div className="col-12">
-//         <div className="title-xs">
-//           <span i18n="@@Tax">Tax</span>:</div>
-//         <div className="text-xs">&nbsp;${{ order.tax | number : '1.2-2'}}</div>
-//       </div>
-//       <div className="col-12" * ngIf="order.type === OrderTypes.FOOD_DELIVERY" >
-//         <div className="title-xs">
-//           <span i18n="@@Tips">Tips</span>:</div>
-//         <div className="text-xs">&nbsp;${{ order.tips | number : '1.2-2'}}</div>
-//       </div >
-//       <div className="col-12" * ngIf="order.type === OrderTypes.FOOD_DELIVERY" >
-//         <div className="title-xs">
-//           <span i18n="@@DeliveryDiscount">Discount</span>:</div>
-//         <div className="text-xs">-${{ order.deliveryDiscount | number : '1.2-2'}}</div>
-//       </div >
-//       <div className="col-12" * ngIf="order.type === OrderTypes.FOOD_DELIVERY && order.groupDiscount>0" >
-//         <div className="title-xs">
-//           <span i18n="@@GroupDiscount">GroupDiscount</span>:</div>
-//         <div className="text-xs">-${{ order.groupDiscount | number : '1.2-2'}}</div>
-//       </div >
-//       <div className="col-12" * ngIf="order.type === OrderTypes.FOOD_DELIVERY && order.overRangeCharge" >
-//         <div className="title-xs">
-//           <span i18n="@@OverRangeCharge">Over Range Charge</span>:</div>
-//         <div className="text-xs">${{ order.overRangeCharge | number : '1.2-2'}}</div>
-//       </div >
-//       <div className="col-12">
-//         <div className="title-xs">
-//           <span i18n="@@Total">Total</span>:</div>
-//         <div className="text-xs">&nbsp;${{ order.total | number : '1.2-2'}}</div>
-//       </div>
-//     </div >
-//   </div >
-// </div >
-//       <div className="row btn-col" * ngIf="canChange(order)" >
-//   <div className="btn btn-sm btn-primary btn-delete" i18n="@@Delete" (click) = "deleteOrder(order)" > Delete</div >
-// </div >
+.order-history{
+  padding: 20px 15px;
+  border-bottom: 1px solid #aaa;
 
-// </div >
-//       <pagination-controls (pageChange) = "OnPageChange($event)" ></pagination - controls >
-// </div >
+  .title-xs, .text-xs{
+    font-size: 13px;
+  }
 
+  .mat-expansion-panel-header {
+    padding: 0 16px;
+    background-color: $yellow;
+  }
+
+  .mat-expansion-panel-header-title {
+    display: block;
+    margin-right: 0px;
+    padding-top: 0px;
+  }
+
+  .row{
+    margin: 0px;
+    width: 100%;
+  }
+
+  // .first-row{
+  //   padding-left: 0px;
+  //   margin-left: 0px;
+  // }
+
+  .col-12{
+    text-align: left;
+    line-height: 13px;
+    padding-top: 4px;
+    padding-left: 0px;
+    font-size: 13px;
+  }
+
+  .text-col {
+    padding: 0px 0px 0px 5px;
+  }
+
+  .btn-col {
+    .btn-change{
+      float: left;
+      margin-right: 15px;
+    }
+    .btn-delete{
+      float: right;
+      margin-right: 0px;
+    }
+  }
+
+
+  .total{
+      padding-top:8px;
+  }
+
+  .order-detail{
+    padding-top: 8px;
+    .items-col{
+      padding-left: 0px;
+      padding-right: 8px;
+    }
+
+    .product-col, .quantity-col, .price-col {
+      padding-left: 0px;
+      padding-right: 0px;
+      font-size: 13px;
+      line-height: 12px;
+      padding: 0px;
+    }
+
+    .description-col{
+      font-size: 13px;
+      color: #888;
+    }
+
+    .total-col{
+      display: flex;
+      align-items: flex-end;
+      padding-left: 0px;
+      padding-right: 0px;
+
+      .title-xs{
+        width: 80px;
+        float: left;
+      }
+      .text-xs{
+        float: left;
+      }
+    }
+  }
+}
+
+.highlight{
+  background: $blue;
+}
+// .list-item:first-child{
+//   background: $blue;
+//   // margin-left: -10px;
+//   // margin-right: -10px;
+//   // padding-left: 10px;
+//   // padding-right: 10px;
+// }
+
+
+// .ngx-pagination{
+//   margin-top: 30px !important;
+// }
+
+@media #{$tablet}{
+  $bottom-bar-h: 60px;
+  $padding-w: 100px;
+  .page{
+    padding: 0px $padding-w;
+  }
+
+  .title-block{
+    width: calc(100% - #{$padding-w} - #{$padding-w});
+  }
+}
+
+@media (max-width: 767px){
+  .order-list{
+    padding: 0px 0px 60px 0px;
+    .list-item{
+      .col-6, .col-12{
+        padding-left: 0px;
+        padding-right: 0px;
+      }
+
+      .title-xs, .text-xs{
+        font-size: 12px;
+      }
+    }
+  }
+}

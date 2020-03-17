@@ -27,7 +27,7 @@ export class Account extends React.Component {
       // location,
       // paymentMethod: PaymentMethod.WECHAT,
       // phone: '123456',
-      // address: loactionSvc.getAddressString(location),
+      // address: loactionSvc.toAddressString(location),
       // items: [{ productName: '土豆', quantity: 3, price: 0.5 }],
       // stripe: null,
       // card: null,
@@ -111,7 +111,7 @@ export class Account extends React.Component {
           <div className="btn btn-primary btn-logout" onClick={this.logout}>退出</div>
         </div>
 
-        <Footer select={this.select} type="menu" menu={Menu.ACCOUNT}></Footer>
+        <Footer select={this.select} type="menu" menu={Menu.ACCOUNT} accountId={this.state.account._id}></Footer>
       </div>
     )
   }

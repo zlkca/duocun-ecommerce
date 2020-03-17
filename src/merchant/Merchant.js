@@ -19,12 +19,14 @@ class Merchant extends React.Component{
   constructor(props) {
     super(props);
     const merchantId = this.props.match.params.id;
-    this.state = { products: [], merchant: { _id: merchantId, name: ''} };
+    const s = store.getState();
+    const amount = this.getTotalPrice(s.cart);
+    this.state = { products: [], merchant: { _id: merchantId, name: ''}, amount };
     // this.onAddressInputChange = this.onAddressInputChange.bind(this);
     // this.onAddressInputClear = this.onAddressInputClear.bind(this);
     // this.onAddressListSelect = this.onAddressListSelect.bind(this);
     // this.getAddressInputVal = this.getAddressInputVal.bind(this);
-    const s = store.getState();
+    
   }
   render() {
     return <div className="page">
@@ -33,7 +35,7 @@ class Merchant extends React.Component{
       {/* <CategoryList></CategoryList> */}
       <ShoppingList products={this.state.products} merchant={this.state.merchant}></ShoppingList>
       </div>
-      <Footer type="button" pathname="/order"></Footer>
+      <Footer type="button" pathname="/order" amount={this.state.amount}></Footer>
     </div>
   }
 
@@ -46,7 +48,24 @@ class Merchant extends React.Component{
       });
     });
   }
+
+  // change(){
+  //   const s = store.getState();
+  //   const amount = this.getTotalPrice(s.cart);
+  //   this.setState({amount});
+  // }
+  
+  getTotalPrice(cart) { // group by date time
+    let total = 0;
+    cart.map(it => { //  {productId, productName, deliveries:[{date, time, price, quantity }]}
+      it.deliveries.map(d => {
+        total += d.price * d.quantity;
+      });
+    });
+    return total;
+  }
 }
+
 
 
 

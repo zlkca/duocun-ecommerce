@@ -5,62 +5,75 @@ import {Footer} from '../common/Footer';
 import './Delivery.scss';
 import {ProductAPI} from '../product/API';
 import { store } from '..';
+import * as moment from 'moment';
 
 export class Delivery extends React.Component{
   productSvc = new ProductAPI();
   constructor(props) {
     super(props);
     const productId = this.props.match.params.id;
-
-    this.change = this.change.bind(this);
-    this.mergeQuantity = this.mergeQuantity.bind(this);
-
+    const s = store.getState();
+    const amount = this.getTotalPrice(s.cart);
     this.state = { 
       product: {_id: productId, name:'', merchantId:''}, 
-      deliveries: this.mergeQuantity(),
-      pathname: ''
+      deliveries: [], // this.mergeQuantity(),
+      pathname: '',
+      amount
     };
-
-    // this.onAddressListSelect = this.onAddressListSelect.bind(this);
-    // this.getAddressInputVal = this.getAddressInputVal.bind(this);
+    
+    
+    this.change = this.change.bind(this);
+    this.mergeQuantity = this.mergeQuantity.bind(this);
+    this.getDeliverySchedule = this.getDeliverySchedule.bind(this);
+    this.getTotalPrice = this.getTotalPrice.bind(this);
   }
 
   render() {
+    const product = this.state.product;
     return <div className="page">
-      <div className="title-row">{this.state.product.name}</div>
+      <div className="title-row">{product.name}&nbsp;${product.price}</div>
       <div className="page-body">
         {/* <CategoryList></CategoryList> */}
+        <div className="text-md note-row">请选择送货时间和数量</div>
         <DeliveryList deliveries={this.state.deliveries} product={this.state.product} onChange={this.change}></DeliveryList>
       </div>
-      <Footer type="button" pathname={this.state.pathname}></Footer>
+      <Footer type="button" pathname={this.state.pathname} amount={this.state.amount}></Footer>
     </div>
   }
 
-  change(item){
-    const its = [];
-    this.state.deliveries.map(it => {
-      if(it._id === item._id){
-        its.push(item);
-      }else{
-        its.push(it);
-      }
+  change(){
+    const s = store.getState();
+    const amount = this.getTotalPrice(s.cart);
+    this.setState({amount});
+  }
+  
+  getTotalPrice(cart) { // group by date time
+    let total = 0;
+    cart.map(it => { //  {productId, productName, deliveries:[{date, time, price, quantity }]}
+      it.deliveries.map(d => {
+        total += d.price * d.quantity;
+      });
     });
-
-    this.setState({deliveries: its});
+    return total;
   }
 
-  mergeQuantity(){
-    const deliveries = 
-      [
-        { date: '2020-02-02', time:'11:00:00', bPassed: 'true', quantity: 0, price: 1, cost: 0.5 },
-        { date: '2020-02-09', time:'11:00:00', bPassed: 'false', quantity: 0, price: 0.6, cost: 0.1 },
-        { date: '2020-02-16', time:'11:00:00', bPassed: 'false', quantity: 0, price: 0.7, cost: 0.4 },
-      ];
-    const ds = [];
-    const productId = this.props.match.params.id;
-    const s = store.getState();
+  getDeliverySchedule(baseDateList, baseTimeList, product){
+    const baseList = baseDateList.map(baseDate => baseDate + 'T' + baseTimeList[0] + '.000Z');
+    const list = [];
+    for(let i=0; i<30; i++){
+      const dateList = baseList.map(s => moment(s).add(7 * i, 'days').toISOString().split('T')[0]);
+      dateList.map(d => {
+        baseTimeList.map(t => {
+          list.push({date: d, time: t, quantity:0, price: product.price, cost: product.cost});
+        });
+      });
+    }
+    return list;
+  }
 
-    const cartItem = s.cart.find(it => it.productId === productId);
+  mergeQuantity(deliveries, cart, productId){
+    const ds = [];
+    const cartItem = cart.find(it => it.productId === productId);
     
     if(cartItem && cartItem.deliveries && cartItem.deliveries.length>0){ // try merge
       deliveries.map(d => {
@@ -79,9 +92,13 @@ export class Delivery extends React.Component{
 
   componentDidMount() {
     const productId = this.props.match.params.id;
-
+    const s = store.getState();
+    const baseDateList = ['2020-03-17', '2020-03-19'];
+    const baseTimeList = ['11:00:00'];
     this.productSvc.getById(productId,['_id', 'name', 'price', 'merchantId']).then(product => {
-      this.setState({product, pathname: "/merchant/" + product.merchantId});
+      const ds = this.getDeliverySchedule(baseDateList, baseTimeList, product);
+      const deliveries = this.mergeQuantity(ds, s.cart, productId);
+      this.setState({product, deliveries, pathname: "/merchant/" + product.merchantId});
     });
   }
 }

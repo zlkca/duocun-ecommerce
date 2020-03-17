@@ -11,7 +11,6 @@ const Menu = {
 export class Footer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { total: 0 };
     this.next = this.next.bind(this);
     this.select = this.select.bind(this);
   }
@@ -22,10 +21,9 @@ export class Footer extends React.Component {
     return <div className="footer" onClick={this.select}>
       {
         this.props.type === 'menu' &&
-        <div className="menu-footer">
-          {/* <Link style={{ textDecoration: 'none' }} to={{ pathname: "/food-delivery" }} className="col" >送餐</Link> */}
-
-          <div className="row bottom-bar bottom-nav-menus">
+        
+        <div className="row bottom-btn bottom-nav-menus">
+        {/* <Link style={{ textDecoration: 'none' }} to={{ pathname: "/food-delivery" }} className="col" >送餐</Link> */}
 
             <div className={selected === Menu.HOME ? 'menu active' : 'menu'} onClick={() => this.select(Menu.HOME)}>
               <Link style={{ textDecoration: 'none' }} to={{ pathname: "/" }}>
@@ -50,7 +48,7 @@ export class Footer extends React.Component {
     </div> */}
 
             <div className={selected === Menu.ORDER_HISTORY ? 'menu active' : 'menu'} onClick={() => this.select(Menu.ORDER_HISTORY)}>
-              <Link style={{ textDecoration: 'none' }} to={{ pathname: "/history" }} >
+              <Link style={{ textDecoration: 'none' }} to={{ pathname: "/history/" + this.props.accountId }} >
                 <div className="icon">
                   <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
                     <path fill="none" d="M0 0h24v24H0V0z" />
@@ -72,24 +70,20 @@ export class Footer extends React.Component {
                 <div className="icon-text">帐号</div>
               </Link>
             </div>
-            
-          </div>
 
-        </div>
+          </div>
       }
       {
         this.props.type === 'button' &&
-        <div className="btn-footer" onClick={this.select}>
-          <div className="row btn-row">
-            <div className="col cart-col">&nbsp;</div>
-            <div className="col price-col">
-              ${this.state.total}
-            </div>
-            <div className="col btn-col" onClick={this.next} >
-              <Link style={{ textDecoration: 'none' }} to={{ pathname: this.props.pathname }} >
-                下一步
+        <div className="row bottom-bar">
+          {/* <div className="col cart-col">&nbsp;</div> */}
+          <div className="amount-col">
+            {this.props.amount ? '$' + this.props.amount : '' }
+          </div>
+          <div className="bottom-btn btn-col" onClick={this.next} >
+            <Link style={{ textDecoration: 'none' }} to={{ pathname: this.props.pathname }} >
+              下一步
             </Link>
-            </div>
           </div>
         </div>
       }

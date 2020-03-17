@@ -10,7 +10,7 @@ $blue: #4285F3;
 
 $primary-color: #4285F3;
 $inverse-font-color: white;
-$background-color: white;
+$bg-color: white;
 $border-color: #eee;
 
 $info-bg: rgb(69,69,69);
@@ -20,17 +20,36 @@ $head-h: 60px;
 $bottom-bar-h: 60px;
 $bottom-btn-w: 125px;
 
-app-footer{
+.page{
+  position: fixed;
+  top: 0px;
+  height: 100%;
+  width: 100%;
+}
+.title-row{
+  height: $head-h;
+  padding: 15px;
+  border-bottom: 1px solid $border-color;
+}
+.page-body{
+  position: fixed;
+  top: $head-h;
+  width: 100%;
+  height: calc(100% - #{$head-h} - #{$bottom-bar-h});
+}
+
+.footer{
   z-index: 9900;
   position: fixed;
   bottom: 0px;
   width: 100%;
+  border-top: 1px solid $border-color;
 }
 
 .bottom-bar{
   width: 100%;
   height: $bottom-bar-h;
-  background: $background-color;
+  background: $bg-color;
   margin: 0px;
   padding: 0px;
   border-top: solid 1px $border-color;

@@ -29,8 +29,8 @@ export class DeliveryList extends React.Component {
     // this.setState({selected: v});
   }
 
-  change(item, quantity){
-    item.quantity = quantity;
-    this.props.onChange(item);
+  change(){
+    // item.quantity = quantity;
+    this.props.onChange();
   }
 }

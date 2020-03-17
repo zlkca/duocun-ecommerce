@@ -1,3 +1,5 @@
+@import '../base';
+
 $label-w: 70px;
 $label-color: #333;
 $text-color: #888;
@@ -6,23 +8,31 @@ $border-color: #ccc;
 .page-body{
   padding: 10px;
 }
+.scroll-frame{
+  height: 100%; // calc(100% - #{$head-h} - #{$bottom-bar-h});
+  overflow: scroll;
+}
 
 .left-side{
-  width: 68%;
+  width: 60%;
   float: left;
 }
 
 .right-side{
-  width: 32%;
+  width: 40%;
   float: left;
 }
 
 .contact{
   padding: 0px;
-  height: 35px;
+  height: 56px;
 }
-
-.address, .phone{
+// .merchant {
+//   margin: 0px;
+//   width: 100%;
+//   text-align: left;
+// }
+.address, .phone, .merchant{
   margin: 0px;
   width: 100%;
   font-weight: 500;
@@ -42,13 +52,9 @@ $border-color: #ccc;
   float: left;
   text-align: left;
   color: $text-color;
+  font-size: 12px;
 }
 
-.merchant {
-  margin: 0px;
-  width: 100%;
-  text-align: left;
-}
 
 .payment-label{
   padding-bottom: 5px;
@@ -100,15 +106,17 @@ $border-color: #ccc;
 
   .text-warning{
     color: #d41a09 !important;
-    padding-bottom: 5px;
+    padding-bottom: 3px;
   }
 }
 
 .notes-block{
   margin-left: 0px;
   margin-right: 0px;
-  padding: 10px 0px;
+  padding: 0px 0px;
   margin: 0px;
+  width: 100%;
+
   .row{
     margin: 0px;
     padding: 0px;

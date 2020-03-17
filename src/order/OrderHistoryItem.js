@@ -1,8 +1,11 @@
 import React from 'react';
 import { OrderType } from './Model';
+import './OrderHistoryItem.scss';
+import { LocationAPI } from '../location/API';
 
 export class OrderHistoryItem extends React.Component {
   // productSvc = new ProductAPI();
+  locationSvc = new LocationAPI();
   // orderSvc = new OrderAPI();
   // paymentSvc = new PaymentAPI();
   // accountSvc = new AccountAPI();
@@ -24,11 +27,12 @@ export class OrderHistoryItem extends React.Component {
   }
 
   toDateString(s) {
-    return s;
+    const t = s.split('.')[0];
+    return t.replace('T', '');
   }
 
   getAddress(location) {
-    return location.toString();
+    return this.locationSvc.toAddressString(location);
   }
 
   render() {
@@ -36,7 +40,6 @@ export class OrderHistoryItem extends React.Component {
     return (
       <div className="order-history" onClick={this.select}>
         <div className="row first-row">
-
           <div className="col-12 text-col">
             <div className="col-12">
               <span className="title-xs">商家</span>:
@@ -54,20 +57,16 @@ export class OrderHistoryItem extends React.Component {
               <span className="title-xs">下单时间</span>:
               <span className="text-xs">{this.toDateString(order.created)}</span>
             </div>
-          </div>
 
+            {
+              (order.type === OrderType.FOOD_DELIVERY || order.type === OrderType.GROCERY) &&
+              <div className="col-12">
+                <span className="title-xs">配送地址</span>:
+                <span className="text-xs">{this.getAddress(order.location)}</span>
+              </div>
+            }
         </div>
-
-        {
-          (order.type === OrderType.FOOD_DELIVERY && order.type === OrderType.GROCERY) &&
-          <div className="row">
-            <div className="col-12 address-row">
-              <span className="title-xs">配送地址</span>:
-              <span className="text-xs">{this.getAddress(order.location)}</span>
-            </div>
-          </div>
-        }
-
+      </div>
         {/* <div className="row order-detail">
           <div className="col-7 items-col" *ngIf="order.type!=='MM'">
             <div *ngFor="let item of order.items" className="text-sm row item-row">

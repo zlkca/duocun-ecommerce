@@ -6,33 +6,36 @@ const DEFAULT_CART = [];
 const DEFAULT_LOCATION = {};
 const DEFAULT_MERCHANT = {};
 
-// payload --- { date, time, quantity, price, cost }
+// state --- {productId, deliveries }
+// payload --- { productId, productName, date, time, quantity, price, cost }
 const updateQuantity = (state, payload, quantity) => {
 
-    // const item = state.find(it => it.productId === payload.productId);
-    // if(item){
-    //   let deliveries = [];
-    //   const found = item.deliveries.find(it => (it.date + it.time) === (payload.date + payload.time));
-    //   if(found){
-    //     item.deliveries.map(it => {
-    //       if ((it.date + it.time) === (payload.date + payload.time)) {
-    //         deliveries.push({ ...it, quantity: quantity });
-    //       } else {
-    //         deliveries.push(it);
-    //       }
-    //     });
-    //   }else{
-    //     deliveries = [...item.deliveries, { ...payload, quantity: quantity }];
-    //   }
-
-    //   const arr = state.filter(it => it.productId !== payload.productId);
-    //   return [...arr, { productId: payload.productId, deliveries: deliveries }];
-    // }else{
-    //   const arr = state.filter(it => it.productId !== payload.productId);
-    //   const deliveries = [{ ...payload, quantity: quantity }];
-    //   return [...arr, { productId: payload.productId, deliveries: deliveries }];
-    // }
-    return state;
+    const item = state.find(it => it.productId === payload.productId);
+    if(item){
+      let deliveries = [];
+      const found = item.deliveries.find(it => (it.date + it.time) === (payload.date + payload.time));
+      if(found){
+        item.deliveries.map(it => {
+          if ((it.date + it.time) === (payload.date + payload.time)) {
+            deliveries.push({ ...it, quantity: quantity});
+          } else {
+            deliveries.push(it);
+          }
+        });
+      }else{
+        deliveries = [...item.deliveries, { ...payload, quantity: quantity }];
+      }
+      deliveries = deliveries.filter(d => d.quantity > 0);
+      const arr = state.filter(it => it.productId !== payload.productId);
+      return [...arr, { productId: payload.productId, productName: payload.productName, deliveries }];
+    }else{
+      const arr = state.filter(it => it.productId !== payload.productId);
+      const delivery = { ...payload, quantity: quantity };
+      delete delivery.productName;
+      const deliveries = [delivery];
+      return [...arr, { productId: payload.productId, productName: payload.productName, deliveries }];
+    }
+    // return state;
 }
 
 // action.payload - eg. {productId:x, date:'2020-03-10', time:'14:00', quantity: 2}
