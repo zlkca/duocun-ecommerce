@@ -1,5 +1,6 @@
-$border-color: #ddd;
-$footer-h: 58px;
+@import '../base';
+
+$menu-w: 33.3%;
 
 .col{
   width: 25%;
@@ -33,5 +34,39 @@ $footer-h: 58px;
       border-right:1px solid $border-color;
     }
   }
+}
 
+
+.bottom-nav-menus{
+  display: flex;
+  padding: 9px 0px;
+  margin: 0px;
+
+  .menu{
+    width: $menu-w;
+    margin: 0px;
+
+    img, svg{
+      width: 28px;
+      height: 28px;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+  }
+}
+
+.icon-text {
+  float: left;
+  width: 100%;
+  margin: 0px;
+  text-align: center;
+  font-size: 12px;
+  color: #333;
+}
+
+.active{
+  .icon-text{
+    color: $primary-color;// #0F9D58;// #F4B400;
+  }
 }

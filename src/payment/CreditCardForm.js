@@ -16,12 +16,15 @@ export class CreditCardForm extends React.Component {
     this.change = this.change.bind(this);
   }
 
-  handleSubmit = async (event) => {
+  handleSubmit = (event) => {
     event.preventDefault();
     const {stripe, elements} = this.props;
-    const {error, paymentMethod} = await stripe.createPaymentMethod({
+    // const {error, paymentMethod} 
+    stripe.createPaymentMethod({
       type: 'card',
       card: elements.getElement(CardElement),
+    }).then(r => {
+      
     });
   };
 

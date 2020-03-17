@@ -18,7 +18,8 @@ export const OrderStatus = {
 export const PaymentMethod = {
   CASH: 'CH',
   WECHAT: 'W',
-  CREDIT_CARD: 'C'
+  CREDIT_CARD: 'C',
+  PREPAY: 'P'
 }
 export const PaymentStatus = {
   UNPAID: 'U',

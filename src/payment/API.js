@@ -31,27 +31,22 @@ export class PaymentAPI {
     });
   }
 
-  // const accountId = req.body.accountId;
-  //   const accountName = req.body.accountName;
-  //   const orders = req.body.orders;
-  //   const note = req.body.note;
-  //   const paymentMethod = 'WECHATPAY'; // orders[0].paymentMethod;
-  //   let amount = +req.body.amount;
-    // order --- when order == null, add credit, when order != null, pay order
-    payBySnappay(accountId, accountName, orders, amount, note) {
-      const url = this.url + '/payBySnappay';
-      return new Promise((resolve, reject) => {
-        const data = { accountId, accountName, orders, amount, note };
-        this.http.post(url, data).then(rsp => {
-          if (rsp.status === HttpStatus.OK.code) {
-            resolve(rsp.data);
-          } else {
-            resolve();
-          }
-        });
+  // order --- when order == null, add credit, when order != null, pay order
+  payBySnappay(accountId, accountName, orders, amount, note) {
+    const url = this.url + '/payBySnappay';
+    return new Promise((resolve, reject) => {
+      const data = { accountId, accountName, orders, amount, note };
+      this.http.post(url, data).then(rsp => {
+        if (rsp.status === HttpStatus.OK.code) {
+          resolve(rsp.data);
+        } else {
+          resolve();
+        }
       });
-    }
+    });
+  }
 
+  // deprecated
   snappayAddCredit(account, paid, paymentMethod, note){
     const url = this.url + '/snappayAddCredit';
     return new Promise((resolve, reject) => {
@@ -66,6 +61,7 @@ export class PaymentAPI {
     });
   }
 
+  // deprecated
   snappayPayOrder( order, paid) {
     const url = this.url + '/snappayPayOrder';
     return new Promise((resolve, reject) => {
@@ -80,6 +76,7 @@ export class PaymentAPI {
     });
   }
 
+  // deprecated
   vaildateCardPay(stripe, card, htmlErrorId) {
     return new Promise((resolve, reject) => {
       if (card._empty) {

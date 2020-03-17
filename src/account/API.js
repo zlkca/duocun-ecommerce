@@ -1,12 +1,25 @@
 import { Http, HttpStatus } from '../API';
 import Cookies from 'js-cookie';
 
+const COOKIE_EXPIRY_DAYS = 365;
+
 export class AccountAPI {
   url = 'Accounts';
   http = new Http();
 
+  setAccessTokenId(token) {
+    if (token) {
+      Cookies.set('duocun-token-id', token, { expires: COOKIE_EXPIRY_DAYS });
+    }
+  }
+
+  getAccessTokenId() {
+    const tokenId = Cookies.get('duocun-token-id');
+    return tokenId ? tokenId : null;
+  }
+
   getCurrentAccount() {
-    const accessTokenId = Cookies.get('duocun-token-id');
+    const accessTokenId = this.getAccessTokenId();
     const url = this.url + '/current' + '?tokenId=' + accessTokenId;
 
     return new Promise((resolve, reject) => {
@@ -20,6 +33,18 @@ export class AccountAPI {
     });
   }
 
+  wxLogin(authCode) {
+    const url = this.url + '/wxLogin?code=' + authCode;
+    return new Promise((resolve, reject) => {
+      this.http.get(url).then(rsp => {
+        if (rsp.status === HttpStatus.OK.code) {
+          resolve(rsp.data);
+        } else {
+          reject();
+        }
+      });
+    });
+  }
 
   find(query = null, fields = null) {
     return new Promise((resolve, reject) => {

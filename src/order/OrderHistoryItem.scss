@@ -1,0 +1,59 @@
+
+//       <div className="col-5 text-sm total-col" *ngIf= "order.total" >
+//       <div className="row">
+//         <div className="col-12">
+//           <div className="title-xs">
+//             <span i18n="@@ProductTotal">ProductTotal</span>:</div>
+//           <div className="text-xs">&nbsp;${{ order.price | number : '1.2-2'}}</div>
+//         </div>
+//         <div className="col-12" *ngIf="order.type === OrderTypes.FOOD_DELIVERY">
+//         <div className="title-xs">
+//           <span i18n="@@DeliveryFee">Delivery Fee</span>:</div>
+//         <div className="text-xs">&nbsp;${{ order.deliveryCost | number : '1.2-2'}}</div>
+//       </div>
+//       <div className="col-12" * ngIf="order.type === OrderTypes.FOOD_DELIVERY" >
+//         <div className="title-xs">
+//           <span i18n="@@Subtotal">Subtotal</span>:</div>
+//         <div className="text-xs">&nbsp;${{ order.price + order.deliveryCost | number : '1.2-2'}}</div>
+//       </div >
+//       <div className="col-12">
+//         <div className="title-xs">
+//           <span i18n="@@Tax">Tax</span>:</div>
+//         <div className="text-xs">&nbsp;${{ order.tax | number : '1.2-2'}}</div>
+//       </div>
+//       <div className="col-12" * ngIf="order.type === OrderTypes.FOOD_DELIVERY" >
+//         <div className="title-xs">
+//           <span i18n="@@Tips">Tips</span>:</div>
+//         <div className="text-xs">&nbsp;${{ order.tips | number : '1.2-2'}}</div>
+//       </div >
+//       <div className="col-12" * ngIf="order.type === OrderTypes.FOOD_DELIVERY" >
+//         <div className="title-xs">
+//           <span i18n="@@DeliveryDiscount">Discount</span>:</div>
+//         <div className="text-xs">-${{ order.deliveryDiscount | number : '1.2-2'}}</div>
+//       </div >
+//       <div className="col-12" * ngIf="order.type === OrderTypes.FOOD_DELIVERY && order.groupDiscount>0" >
+//         <div className="title-xs">
+//           <span i18n="@@GroupDiscount">GroupDiscount</span>:</div>
+//         <div className="text-xs">-${{ order.groupDiscount | number : '1.2-2'}}</div>
+//       </div >
+//       <div className="col-12" * ngIf="order.type === OrderTypes.FOOD_DELIVERY && order.overRangeCharge" >
+//         <div className="title-xs">
+//           <span i18n="@@OverRangeCharge">Over Range Charge</span>:</div>
+//         <div className="text-xs">${{ order.overRangeCharge | number : '1.2-2'}}</div>
+//       </div >
+//       <div className="col-12">
+//         <div className="title-xs">
+//           <span i18n="@@Total">Total</span>:</div>
+//         <div className="text-xs">&nbsp;${{ order.total | number : '1.2-2'}}</div>
+//       </div>
+//     </div >
+//   </div >
+// </div >
+//       <div className="row btn-col" * ngIf="canChange(order)" >
+//   <div className="btn btn-sm btn-primary btn-delete" i18n="@@Delete" (click) = "deleteOrder(order)" > Delete</div >
+// </div >
+
+// </div >
+//       <pagination-controls (pageChange) = "OnPageChange($event)" ></pagination - controls >
+// </div >
+

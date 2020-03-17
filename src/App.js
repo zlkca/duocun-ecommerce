@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // import './common/Modal.scss';
 import './App.scss';
 
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 
 import Home from './main/Home';
 import Merchant from './merchant/Merchant';
@@ -26,25 +26,28 @@ class App extends React.Component {
     return (
       <div className="App">
         
-        <Router>
+        <BrowserRouter>
             <Route path="/food-delivery" component={() => {
               window.location.href = "http://localhost:5000"; // "https://duocun.ca";
               return null;
             }} />
+            
             <Route exact path="/" component={Home} />
             <Route path="/merchant/:id" component={Merchant} />
             <Route path="/order" component={Order} />
             <Route path="/delivery/:id" component={Delivery} />
-            <Route path="/history" component={() => {
+            <Route path="/history" component={OrderHistory} />
+            <Route path="/account" component={Account} />
+            {/* <Route path="/history" component={() => {
               window.location.href = "http://localhost:3001/history";// "https://duocun.ca";
               return null;
             }} />
             <Route path="/account" component={() => {
               window.location.href = "http://localhost:3001/account";// "https://duocun.ca";
               return null;
-            }} />
+            }} /> */}
 
-        </Router>
+        </BrowserRouter>
         
       </div>
     );

@@ -103,19 +103,26 @@ export class Order extends React.Component {
             <Charge charge={charge}></Charge>
           </div>
 
-          <div className="label payment-label">付款方式</div>
-          
-          <PaymentMethodSelect onSelect={this.onSelectPaymentMethod}></PaymentMethodSelect>
 
           {
-            this.state.paymentMethod === PaymentMethod.CREDIT_CARD &&
-            <Elements stripe={stripePromise}>
-              <InjectedCheckoutForm onChange={this.onCreditCardChange} />
-            </Elements>
+            this.state.paymentMethod != PaymentMethod.PREPAY ?
+            <div>
+              <div className="label payment-label">付款方式</div>
+              <PaymentMethodSelect onSelect={this.onSelectPaymentMethod}></PaymentMethodSelect>
+              {
+                this.state.paymentMethod === PaymentMethod.CREDIT_CARD &&
+                <Elements stripe={stripePromise}>
+                  <InjectedCheckoutForm onChange={this.onCreditCardChange} />
+                </Elements>
+              }
+            </div>
+            :
+            <div className="prepay">用余额付款</div>
           }
 
+
           <div className="row warning-block">
-            <div className="label-sm text-warning">*如果你在公寓楼或办公楼请在大楼门口取件，我们无法上楼送件。</div>
+            <div className="label-sm text-warning">*如果你在公寓楼或办公楼请在大楼门口取件，我们无法上楼。</div>
             <div className="label-sm text-warning">**请将您的电话保持在接听状态，以便联系。</div>
           </div>
 
@@ -128,8 +135,6 @@ export class Order extends React.Component {
             </div>
           </div>
         </div>
-
-
 
 
         <Footer type="button" onNext={this.submitOrder}></Footer>
@@ -159,6 +164,13 @@ export class Order extends React.Component {
 
   // delivery --- only need 'origin' and 'dateType' fields
   createOrder(account, merchant, items, location, deliverDate, deliverTime, charge, note, paymentMethod) {
+
+    // const sCreated = moment().toISOString();
+    // const { deliverDate, deliverTime } = this.getDeliveryDateTimeByPhase(sCreated, merchant.phases, delivery.dateType);
+    const status = (paymentMethod === PaymentMethod.CREDIT_CARD || paymentMethod === PaymentMethod.WECHAT) ?
+      OrderStatus.TEMP : OrderStatus.NEW; // prepay need Driver to confirm finished
+    const paymentStatus = paymentMethod === PaymentMethod.PREPAY ? PaymentStatus.PAID : PaymentStatus.UNPAID;
+
     const order = {
       clientId: account._id,
       clientName: account.username,
@@ -169,8 +181,8 @@ export class Order extends React.Component {
       deliverDate,
       deliverTime,
       type: OrderType.GROCERY,
-      status: (paymentMethod === PaymentMethod.WECHAT || paymentMethod === PaymentMethod.CREDIT_CARD) ? OrderStatus.TEMP : OrderStatus.NEW,
-      paymentStatus: PaymentStatus.UNPAID,
+      status, 
+      paymentStatus,
       paymentMethod,
       note,
       price: Math.round(charge.price * 100) / 100,
@@ -193,7 +205,13 @@ export class Order extends React.Component {
       const merchantId = this.state.merchant._id;
       this.productSvc.quickFind({ merchantId }, ['_id', 'name', 'price']).then(products => {
         this.accountSvc.getCurrentAccount().then(account => {
-          this.setState({ products, account });
+          
+          const groups = this.getOrderGroups(this.state.cart);
+          const summary = this.getSummary(groups);
+          const amount = summary.total;
+          const paymentMethod = (account.balance >= amount) ? PaymentMethod.PREPAY : this.state.paymentMethod;
+
+          this.setState({ products, account, paymentMethod });
         });
       });
     }
@@ -283,6 +301,8 @@ export class Order extends React.Component {
     const paymentMethod = this.state.paymentMethod;
     const note = this.state.note;
     const groups = this.getOrderGroups(this.state.cart);
+    const summary = this.getSummary(groups);
+    const amount = summary.price;
     const orders = [];
     groups.map(group => {
       const charge = this.getCharge(group);
@@ -290,8 +310,6 @@ export class Order extends React.Component {
       orders.push(order);
     });
 
-    const summary = this.getSummary(groups);
-    const amount = summary.price;
 
     this.orderSvc.placeOrders(orders).then(newOrders => {
       if (this.state.paymentMethod === PaymentMethod.CREDIT_CARD) {
@@ -325,7 +343,7 @@ export class Order extends React.Component {
             // show error
           }
         });
-      } else { // PaymentMethod.CASH
+      } else { // PaymentMethod.CASH || PaymentMethod.PREPAY
         // this.orderSvc.addDebit(newOrders).then(rsp => {
         window.location.href = 'http://localhost:3001/history';
         // });

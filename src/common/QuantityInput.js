@@ -30,7 +30,6 @@ export class QuantityInput extends React.Component {
 
   render() {
     return (
-
       <div className="quantity-ctrl">
         <div className="increase-btn" onClick={this.increase}>
           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
