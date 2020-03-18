@@ -13,7 +13,7 @@ import { Order } from './order/Order';
 import { OrderHistory } from './order/OrderHistory';
 import { Account } from './account/Account';
 import { Delivery } from './shopping/Delivery';
-
+import { Balance } from './account/Balance';
 class App extends React.Component {
   constructor(props){
     super(props);
@@ -38,6 +38,7 @@ class App extends React.Component {
             <Route path="/delivery/:id" component={Delivery} />
             <Route path="/history/:accountId" component={OrderHistory} />
             <Route path="/account" component={Account} />
+            <Route path="/balance" component={Balance} />
             {/* <Route path="/history" component={() => {
               window.location.href = "http://localhost:3001/history";// "https://duocun.ca";
               return null;

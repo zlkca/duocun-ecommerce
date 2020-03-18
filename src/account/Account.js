@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 import { AccountAPI } from '../account/API';
 import './Account.scss';
 import { Footer } from '../common/Footer';
@@ -14,31 +16,16 @@ export class Account extends React.Component {
 
   constructor(props) {
     super(props);
-    // const loactionSvc = new LocationAPI();
-    // const s = store.getState();
-    // const location = s.location;
-    // const merchant = s.merchant;
+
     this.state = {
       account: '',
       lang: 'zh',
       orders: [],
       balance: 0
-      // merchant,
-      // location,
-      // paymentMethod: PaymentMethod.WECHAT,
-      // phone: '123456',
-      // address: loactionSvc.toAddressString(location),
-      // items: [{ productName: '土豆', quantity: 3, price: 0.5 }],
-      // stripe: null,
-      // card: null,
-      // order: null,
-      // cart: s.cart
     };
     this.toBalancePage = this.toBalancePage.bind(this);
     this.getDefaultAddress = this.getDefaultAddress.bind(this);
     this.select = this.select.bind(this);
-    // this.getAddressInputVal = this.getAddressInputVal.bind(this);
-
   }
 
   toBalancePage(){
@@ -76,11 +63,13 @@ export class Account extends React.Component {
             <div className="col-12 title-sm">当前余额</div>
             <div className="col-12 title-bg">${this.state.balance}</div>
             <div className="col-12 title-sm">
+              <Link style={{ textDecoration: 'none' }} to={{ pathname: "/balance" }} >
               <span>查看明细</span>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
                 <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" fill="#666" />
                 <path d="M0 0h24v24H0z" fill="none" />
               </svg>
+              </Link>
             </div>
           </div>
         }

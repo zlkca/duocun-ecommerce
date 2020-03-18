@@ -14,6 +14,7 @@ export class Charge extends React.Component {
 
   render() {
     const c = this.props.charge;
+    const bShowBalance = this.props.bShowBalance;
     return <div className="charge-list">
       <div className="row text-sm">
         <div className="col-12">
@@ -27,7 +28,7 @@ export class Charge extends React.Component {
           <div className="title-xs">
             <span>运费</span>:
           </div>
-          <div className="text-xs">&nbsp;$0</div>
+          <div className="text-xs">&nbsp;${c.deliveryCost}</div>
         </div>
 
         {/* <div className="col-12">
@@ -73,7 +74,7 @@ export class Charge extends React.Component {
         </div>
 
         {
-          c.balance !== 0 &&
+          bShowBalance && c.balance !== 0 &&
           <div className="col-12">
             <div className="title-xs">
               <span>当前余额</span>:
@@ -94,6 +95,7 @@ export class Charge extends React.Component {
         }
 
         {
+          bShowBalance &&
           <div className="col-12 total-row">
             <div className="title-xs">
               <span>总共应付</span>:

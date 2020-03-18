@@ -7,3 +7,16 @@
     filter: invert(71%) sepia(42%) saturate(5386%) hue-rotate(13deg) brightness(112%) contrast(103%);
   }
 }
+
+.order-list{
+  height: calc(100% - 36px);
+  overflow: scroll;
+}
+
+ul.pagination{
+  padding-top: 8px;
+  li{
+    width: 30px;
+    font-size: 18px;
+  }
+}

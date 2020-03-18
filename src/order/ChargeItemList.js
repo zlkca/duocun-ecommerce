@@ -24,7 +24,7 @@ export class ChargeItemList extends React.Component {
     {
       this.props.items.map(item => 
         <div className="text-sm item-row">
-          <div className="product-col">{item.productName + ' ' + item.date + ' ' +item.time}</div>
+          <div className="product-col">{item.productName + ' ' + item.date}</div>
           <div className="quantity-col">x{item.quantity}</div>
           <div className="price-col">${item.price}</div>
         </div>

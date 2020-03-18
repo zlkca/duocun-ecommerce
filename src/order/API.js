@@ -33,10 +33,9 @@ export class OrderAPI {
   }
 
   quickFind(query = null, fields = null) {
-    const http = new Http();
     return new Promise((resolve, reject) => {
-      http.get(this.url + '/qFind', query, fields).then(rsp => {
-        if (rsp.status === http.Status.OK.code) {
+      this.http.get(this.url + '/qFind', query, fields).then(rsp => {
+        if (rsp.status === HttpStatus.OK.code) {
           resolve(rsp.data);
         } else {
           resolve();
@@ -45,4 +44,28 @@ export class OrderAPI {
     });
   }
 
+  joinFind(query = null, fields = null) {
+    return new Promise((resolve, reject) => {
+      this.http.get(this.url, query, fields).then(rsp => {
+        if (rsp.status === HttpStatus.OK.code) {
+          resolve(rsp.data);
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
+
+  loadPage(query, currentPageNumber, itemsPerPage, fields ){
+    const url = this.url + '/loadPage/' + currentPageNumber + '/' + itemsPerPage;
+    return new Promise((resolve, reject) => {
+      this.http.get(url, query, fields).then(rsp => {
+        if (rsp.status === HttpStatus.OK.code) {
+          resolve(rsp.data);
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
 }

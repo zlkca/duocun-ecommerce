@@ -78,6 +78,7 @@ export class Order extends React.Component {
   }
 
   render() {
+    const bShowBalance = true;
     const balance = Math.round(this.state.account.balance * 100) / 100;
     const payable = Math.round((balance >= this.summary.total ? 0 : this.summary.total - balance) * 100) / 100;
     const charge = { ...this.summary, ...{ payable }, ...{ balance } };
@@ -107,7 +108,7 @@ export class Order extends React.Component {
               <ChargeItemList items={this.state.chargeItems}></ChargeItemList>
             </div>
             <div className="right-side">
-              <Charge charge={charge}></Charge>
+              <Charge charge={charge} bShowBalance={bShowBalance}></Charge>
             </div>
             {
               this.state.paymentMethod != PaymentMethod.PREPAY ?
@@ -274,7 +275,7 @@ export class Order extends React.Component {
           price += x.price * x.quantity;
           cost += x.cost * x.quantity;
         });
-        let tax = Math.ceil(price * 13) / 100;
+        let tax = 0; // Math.ceil(price * 13) / 100;
         let subTotal = (price + tax + tips - groupDiscount + overRangeCharge);
 
         totalPrice += total;

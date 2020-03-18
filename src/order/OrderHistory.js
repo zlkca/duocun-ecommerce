@@ -1,21 +1,13 @@
 import React from 'react';
 import './OrderHistory.scss';
-// import { Footer } from '../common/Footer';
-// import {ProductAPI} from '../product/API';
-// import {MerchantAPI} from '../merchant/API';
-// import { Charge } from './Charge';
-// import { store } from '..';
+import * as moment from 'moment';
+import Pagination from 'react-js-pagination';
 
-// import { PaymentMethodSelect } from '../common/PaymentMethodSelect';
-// import { ChargeItemList } from './ChargeItemList';
-// import { LocationAPI } from '../location/API';
-// import { PaymentAPI } from '../payment/API';
-// import { InjectedCheckoutForm } from '../payment/CreditCardForm';
-// import { loadStripe } from '@stripe/stripe-js';
 import { Footer } from '../common/Footer';
 import { OrderHistoryItem } from './OrderHistoryItem';
 import { OrderAPI } from './API';
 import { AccountAPI } from '../account/API';
+import { OrderType } from './Model';
 
 const Menu = {
   HOME: 'H',
@@ -28,6 +20,9 @@ export class OrderHistory extends React.Component {
   // paymentSvc = new PaymentAPI();
   accountSvc = new AccountAPI();
   accountId;
+  nOrders = 0;
+  itemsPerPage = 10;
+  lang = 'zh';
 
   constructor(props) {
     super(props);
@@ -38,22 +33,47 @@ export class OrderHistory extends React.Component {
       account: '',
       lang: 'zh',
       orders: [],
-      // merchant,
-      // location,
-      // paymentMethod: PaymentMethod.WECHAT,
-      // phone: '123456',
-      // address: loactionSvc.toAddressString(location),
-      // items: [{ productName: '土豆', quantity: 3, price: 0.5 }],
-      // stripe: null,
-      // card: null,
-      // order: null,
-      // cart: s.cart
+      activePage: 1
     };
-    // this.submitOrder = this.submitOrder.bind(this);
-    // this.onCreditCardChange = this.onCreditCardChange.bind(this);
-    // this.createOrder = this.createOrder.bind(this);
-    // this.getAddressInputVal = this.getAddressInputVal.bind(this);
+    this.handlePageChange = this.handlePageChange.bind(this);
+    this.getDescription = this.getDescription.bind(this);
+  }
 
+  getDescription(order) {
+    const d = order.delivered.split('T')[0];
+    const m = +(d.split('-')[1]);
+    const prevMonth = m === 1 ? 12 : (m - 1);
+
+    // const product = order.items[0].product;
+    // const productName = this.lang === 'en' ? product.name : product.nameEN;
+    const range = prevMonth + '/27 ~ ' + m + '/26';
+
+    if (order.type === OrderType.MOBILE_PLAN_MONTHLY) {
+      return range + (this.lang === 'en' ? ' Phone monthly fee' : ' 电话月费');
+    // } else if (order.type === 'MS') {
+    //   return (this.lang === 'en' ? ' Phone setup fee' : ' 电话安装费');
+    } else {
+      return '';
+    }
+  }
+
+  handlePageChange(pageNumber) {
+    const accountId = this.accountId;
+    this.setState({loading: true});
+    this.orderSvc.loadPage({ clientId: accountId }, pageNumber, this.itemsPerPage).then(ret => {
+      ret.orders.map(order => {
+        order.description = this.getDescription(order);
+        if (this.lang === 'en') {
+          order.merchantName = order.merchant ? order.merchant.nameEN : '';
+          order.items.map(item => {
+            item.product.name = item.product.nameEN;
+          });
+        }
+      });
+
+      this.nOrders = ret.total;
+      this.setState({loading: false, orders: ret.orders, activePage: pageNumber});
+    });
   }
 
   render() {
@@ -66,7 +86,6 @@ export class OrderHistory extends React.Component {
       <div className="page">
         <div className="title-row">订单历史</div>
         <div className="page-body">
-
 
           {/* <div className="loading-spinner" *ngIf="loading">
   <app-progress-spinner></app-progress-spinner>
@@ -95,6 +114,15 @@ export class OrderHistory extends React.Component {
             }
             </div>
           }
+
+          <Pagination
+          activePage={this.state.activePage}
+          itemsCountPerPage={this.itemsPerPage}
+          totalItemsCount={this.nOrders}
+          pageRangeDisplayed={5}
+          onChange={this.handlePageChange.bind(this)}
+          />
+
       </div>
       <Footer select={this.select} type="menu" menu={Menu.ORDER_HISTORY}></Footer>
     </div >
@@ -108,143 +136,44 @@ export class OrderHistory extends React.Component {
   componentDidMount() {
     if (this.accountId) {
       const accountId = this.accountId;
-      this.orderSvc.quickFind({ clientId: accountId }).then(orders => {
+      const pageNumber = 1;
+      this.setState({loading: true});
+      this.orderSvc.loadPage({ clientId: accountId }, pageNumber, this.itemsPerPage).then(ret => {
+        ret.orders.map(order => {
+          order.description = this.getDescription(order);
+          if (this.lang === 'en') {
+            order.merchantName = order.merchant ? order.merchant.nameEN : '';
+            order.items.map(item => {
+              item.product.name = item.product.nameEN;
+            });
+          }
+        });
+
+        this.nOrders = ret.total;
+        this.setState({loading: false, orders: ret.orders, activePage: pageNumber});
+      });
+
+      this.orderSvc.joinFind({ clientId: accountId }).then(rs => {
+        const orders = rs.sort((a, b) => {
+          const ma = moment(a.delivered).set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+          const mb = moment(b.delivered).set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+          if (ma.isAfter(mb)) {
+            return -1;
+          } else if (mb.isAfter(ma)) {
+            return 1;
+          } else {
+            const ca = moment(a.created);
+            const cb = moment(b.created);
+            if (ca.isAfter(cb)) {
+              return -1;
+            } else {
+              return 1;
+            }
+          }
+        });
         this.setState({ orders });
       });
     }
   }
 
-  // cart --- [{productId, deliveries: [{date, time, price, cost, quantity}] }]
-  // return --- [{date, time, items: [{productId, quantity, price, cost}] }]
-  getOrderGroups(groups) { // group by date time
-    const orders = [];
-    groups.map(it => { //  {productId, deliveries:[{date, time, price, quantity }]}
-      it.deliveries.map(d => {
-        const order = orders.find(t => t.date === d.date && t.time === d.time);
-        if (order) {
-          order.items.push({ productId: it.productId, quantity: d.quantity, price: d.price, cost: d.cost });
-        } else {
-          orders.push({ date: d.date, time: d.time, items: [{ productId: it.productId, quantity: d.quantity, price: d.price, cost: d.cost }] })
-        }
-      });
-    });
-    return orders;
-  }
-
-  getSummary(groups, overRangeCharge) {
-    let price = 0;
-    let cost = 0;
-
-    if (groups && groups.length > 0) {
-      groups.map(group => {
-        group.items.map(x => {
-          price += x.price * x.quantity;
-          cost += x.cost * x.quantity;
-        });
-      });
-    }
-
-    const subTotal = price + 0; // merchant.deliveryCost;
-    const tax = Math.ceil(subTotal * 13) / 100;
-    const tips = 0;
-    const groupDiscount = 0;
-    const overRangeTotal = Math.round(overRangeCharge * 100) / 100;
-
-    return {
-      price, cost, tips, tax,
-      overRangeCharge: overRangeTotal,
-      deliveryCost: 0, // merchant.deliveryCost,
-      deliveryDiscount: 0, // merchant.deliveryCost,
-      groupDiscount, // groupDiscount,
-      total: price + tax + tips - groupDiscount + overRangeTotal
-    };
-  }
-
-  getCharge(group, overRangeCharge) {
-    let price = 0;
-    let cost = 0;
-
-    group.items.map(x => {
-      price += x.price * x.quantity;
-      cost += x.cost * x.quantity;
-    });
-
-    const subTotal = price + 0; // merchant.deliveryCost;
-    const tax = Math.ceil(subTotal * 13) / 100;
-    const tips = 0;
-    const groupDiscount = 0;
-    const overRangeTotal = Math.round(overRangeCharge * 100) / 100;
-
-    return {
-      price, cost, tips, tax,
-      overRangeCharge: overRangeTotal,
-      deliveryCost: 0, // merchant.deliveryCost,
-      deliveryDiscount: 0, // merchant.deliveryCost,
-      groupDiscount, // groupDiscount,
-      total: price + tax + tips - groupDiscount + overRangeTotal
-    };
-  }
-
-  submitOrder() {
-    // const account = this.state.account;
-    // const merchant = this.state.merchant;
-    // const location = this.state.location;
-    // const paymentMethod = this.state.paymentMethod;
-    // const note = '';
-    // const groups = this.getOrderGroups(this.state.cart);
-    // const orders = [];
-    // groups.map(group => {
-    //   const charge = this.getCharge(group);
-    //   const order = this.createOrder(account, merchant, group.items, location, group.date, group.time, charge, note, paymentMethod);
-    //   orders.push(order);
-    // });
-
-    // const summary = this.getSummary(groups);
-    // const amount = summary.price;
-
-    // this.orderSvc.placeOrders(orders).then(newOrders => {
-
-    //   if (this.state.paymentMethod === PaymentMethod.CREDIT_CARD) {
-
-    //     this.state.stripe.createPaymentMethod({
-    //       type: 'card',
-    //       card: this.state.card,
-    //       billing_details: {
-    //         name: account.username
-    //       }
-    //     }).then(result => {
-    //       if (result.error) {
-    //         // An error happened when collecting card details,
-    //         // show `result.error.message` in the payment form.
-    //       } else {
-    //         this.paymentSvc.payByCreditCard(account._id, account.username, newOrders, amount, note).then(rs => {
-    //           const s = rs;
-    //         });
-    //         // Otherwise send paymentMethod.id to your server (see Step 3)
-    //         // const response = await fetch('/pay', {
-    //         //   method: 'POST',
-    //         //   headers: { 'Content-Type': 'application/json' },
-    //         //   body: JSON.stringify({
-    //         //     payment_method_id: result.paymentMethod.id,
-    //         //   }),
-    //         // });
-
-    //         // const serverResponse = await response.json();
-    //         // this.payByCreditCard(accountId, accountName, order, amount, note).then(rsp => {
-
-    //         // })
-    //         // handleServerResponse(serverResponse);
-    //       }
-    //     });
-    //   } else if (this.state.paymentMethod === PaymentMethod.WECHAT) {
-    //     this.paymentSvc.payBySnappay(account._id, account.username, newOrders, amount, note).then(rs => {
-    //       const s = rs;
-    //     });
-    //   } else { // PaymentMethod.CASH
-
-    //   }
-    // });
-
-
-  }
 }

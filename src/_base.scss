@@ -20,6 +20,8 @@ $head-h: 60px;
 $bottom-bar-h: 60px;
 $bottom-btn-w: 125px;
 
+$pagination-h: 32px;
+
 .page{
   position: fixed;
   top: 0px;
@@ -62,6 +64,14 @@ $bottom-btn-w: 125px;
     background: $primary-color;
     width: $bottom-btn-w;
     padding-top: 15px;
+  }
+}
+
+ul.pagination{
+  padding-top: 8px;
+  li{
+    width: 30px;
+    font-size: 18px;
   }
 }
 
