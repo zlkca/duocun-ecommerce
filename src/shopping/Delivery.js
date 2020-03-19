@@ -57,36 +57,42 @@ export class Delivery extends React.Component{
     return total;
   }
 
+  // baseDateList eg. ['2020-09-23']
+  // baseTimeList eg. ['11:20']
+  // return { date, time }; // quantity, price, cost, taxRate }
   getDeliverySchedule(baseDateList, baseTimeList, product){
-    const baseList = baseDateList.map(baseDate => baseDate + 'T' + baseTimeList[0] + '.000Z');
+    const baseList = baseDateList.map(baseDate => baseDate + 'T' + baseTimeList[0] + ':00.000Z');
     const list = [];
     for(let i=0; i<30; i++){
       const dateList = baseList.map(s => moment(s).add(7 * i, 'days').toISOString().split('T')[0]);
       dateList.map(d => {
         baseTimeList.map(t => {
-          list.push({date: d, time: t, quantity:0, price: product.price, cost: product.cost});
+          // const taxRate = product.taxRate !== null ? product.taxRate : 0;
+          list.push({date: d, time: t}); // , quantity:0, price: product.price, cost: product.cost, taxRate });
         });
       });
     }
     return list;
   }
 
-  mergeQuantity(deliveries, cart, productId){
+  // slots [{date, time}...]
+  // cart --- { product, deliveries:[{date, time, quantity}]}
+  mergeQuantity(slots, cart, productId){
     const ds = [];
-    const cartItem = cart.find(it => it.productId === productId);
+    const cartItem = cart.find(it => it.product && it.product._id === productId);
     
     if(cartItem && cartItem.deliveries && cartItem.deliveries.length>0){ // try merge
-      deliveries.map(d => {
-        const updated = cartItem.deliveries.find(it => it.date + it.time === d.date + d.time);
+      slots.map(slot => {
+        const updated = cartItem.deliveries.find(d => slot.date + slot.time === d.date + d.time);
         if(updated){
-          ds.push({ date: d.date, time:d.time, quantity: updated.quantity, price: d.price, cost: d.cost });
+          ds.push({ ...slot, quantity: updated.quantity });
         }else{
-          ds.push(d);
+          ds.push(slot);
         }
       });
       return ds;
     }else{
-      return deliveries;
+      return slots;
     }
   }
 
@@ -94,8 +100,8 @@ export class Delivery extends React.Component{
     const productId = this.props.match.params.id;
     const s = store.getState();
     const baseDateList = ['2020-03-17', '2020-03-19'];
-    const baseTimeList = ['11:00:00'];
-    this.productSvc.getById(productId,['_id', 'name', 'price', 'merchantId']).then(product => {
+    const baseTimeList = ['11:00'];
+    this.productSvc.getById(productId,['_id', 'name', 'price', 'cost', 'taxRate', 'merchantId']).then(product => {
       const ds = this.getDeliverySchedule(baseDateList, baseTimeList, product);
       const deliveries = this.mergeQuantity(ds, s.cart, productId);
       this.setState({product, deliveries, pathname: "/merchant/" + product.merchantId});

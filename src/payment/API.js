@@ -12,6 +12,18 @@ export const PaymentError = {
   WECHATPAY_FAIL: 'WF'
 };
 
+export const PaymentMethod = {
+  CASH: 'CA',
+  WECHAT: 'W',
+  CREDIT_CARD: 'CC',
+  PREPAY: 'P'
+};
+
+export const PaymentStatus = {
+  UNPAID: 'U',
+  PAID: 'P'
+};
+
 export class PaymentAPI {
   url = 'ClientPayments';
   http = new Http();

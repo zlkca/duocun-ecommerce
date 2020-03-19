@@ -86,6 +86,7 @@ export class Balance extends React.Component {
       }
     }
   }
+
   handlePageChange(pageNumber) {
     this.setState({loading: true});
       const clientId = this.state.account._id;
@@ -96,8 +97,8 @@ export class Balance extends React.Component {
         ret.transactions.map(t => {
           const b = t.fromId === clientId ? t.fromBalance : t.toBalance;
           const description = this.getDescription(t, clientId);
-          const consumed = t.toId === clientId ? t.amount : 0;
-          const paid = t.fromId === clientId ? t.amount : 0;
+          const consumed = t.toId === clientId ? Math.round(t.amount * 100)/100 : 0;
+          const paid = t.fromId === clientId ? Math.round(t.amount * 100)/100 : 0;
           list.push({ date: t.created, description, consumed, paid, balance: -b });
         });
         this.setState({loading: false, transactions: list, activePage: pageNumber});
@@ -172,8 +173,8 @@ export class Balance extends React.Component {
         ret.transactions.map(t => {
           const b = t.fromId === clientId ? t.fromBalance : t.toBalance;
           const description = this.getDescription(t, clientId);
-          const consumed = t.toId === clientId ? t.amount : 0;
-          const paid = t.fromId === clientId ? t.amount : 0;
+          const consumed = t.toId === clientId ? Math.round(t.amount * 100)/100 : 0;
+          const paid = t.fromId === clientId ? Math.round(t.amount * 100)/100 : 0;
           list.push({ date: t.created, description, consumed, paid, balance: -b });
         });
         this.setState({account, loading: false, transactions: list, activePage: pageNumber});

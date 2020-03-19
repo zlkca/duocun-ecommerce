@@ -17,8 +17,8 @@ export class DateItem extends React.Component{
     // ]
     return (
       <div className="date-item">
-        <div className="date-col">{this.props.item.date}</div>
-        <div className="time-col">{this.props.item.time}</div>
+        <div className="date-col">{this.props.date}</div>
+        <div className="time-col">{this.props.time}</div>
       </div>
     );
   }

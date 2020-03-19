@@ -15,9 +15,12 @@ export class DeliveryList extends React.Component {
       <div className="delivery-list">
         {
           // this.props.list && this.props.list.length > 0 &&
-          this.props.deliveries.map(delivery => <DeliveryItem key={delivery.date} delivery={delivery} product={this.props.product}
-            onChange={this.change}
-            select={this.select} className="row"></DeliveryItem>)
+          this.props.deliveries.map(d => 
+            <DeliveryItem key={d.date + d.time} delivery={d} product={this.props.product}
+              onChange={this.change}
+              select={this.select} className="row">
+            </DeliveryItem>
+          )
         }
       </div>
     );

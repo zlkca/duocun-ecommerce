@@ -5,18 +5,11 @@ import { LocationAPI } from '../location/API';
 import { Charge } from './Charge';
 
 export class OrderHistoryItem extends React.Component {
-  // productSvc = new ProductAPI();
+
   locationSvc = new LocationAPI();
-  // orderSvc = new OrderAPI();
-  // paymentSvc = new PaymentAPI();
-  // accountSvc = new AccountAPI();
 
   constructor(props) {
     super(props);
-    // const loactionSvc = new LocationAPI();
-    // const s = store.getState();
-    // const location = s.location;
-    // const merchant = s.merchant;
     this.state = {}
     this.select = this.select.bind(this);
     this.toDateString = this.toDateString.bind(this);
@@ -40,17 +33,19 @@ export class OrderHistoryItem extends React.Component {
   getCharge(order) {
     let price = 0;
     let cost = 0;
+    let tax = 0;
 
     order.items.map(x => {
       price += x.price * x.quantity;
       cost += x.cost * x.quantity;
+      tax += Math.round(x.price * x.quantity * x.product.taxRate) / 100;
     });
+    
+    tax += Math.round((order.overRangeCharge + order.deliveryCost) * 13) / 100; // fix me !
 
-    const subTotal = price + order.deliveryCost;
-    const tax = order.type === OrderType.GROCERY ? 0 : Math.ceil(subTotal * 13) / 100;
     const tips = 0;
     const groupDiscount = 0;
-    const total = subTotal + tax + tips + order.overRangeCharge - order.deliveryDiscount - groupDiscount ;
+    const total = price + order.deliveryCost + tax + tips + order.overRangeCharge - order.deliveryDiscount - groupDiscount ;
     return {
       price: Math.round(price * 100) / 100,
       cost: Math.round(cost * 100) / 100,
@@ -71,7 +66,6 @@ export class OrderHistoryItem extends React.Component {
       <div className="order-history" onClick={this.select}>
         <div className="row first-row">
           <div className="col-12 text-col">
-
             <div className="col-12">
               <span className="title-xs">商家</span>:
               <span className="text-xs">{order.merchantName}</span>

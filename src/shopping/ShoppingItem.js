@@ -55,12 +55,12 @@ class ShoppingItem extends React.Component {
         </div>
 
         {
-          this.state.quantity > 0 &&
-          <QuantityInput onIncrease={this.increase}
-            onDecrease={this.decrease}
-            onChange={this.change}
-            val={this.state.quantity}>
-          </QuantityInput>
+          // this.state.quantity > 0 &&
+          // <QuantityInput onIncrease={this.increase}
+          //   onDecrease={this.decrease}
+          //   onChange={this.change}
+          //   quantity={this.state.quantity}>
+          // </QuantityInput>
         }
 
       </div>

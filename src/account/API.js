@@ -8,6 +8,10 @@ export class AccountAPI {
   http = new Http();
 
   setAccessTokenId(token) {
+    const oldToken = this.getAccessTokenId();
+    if(oldToken){
+      Cookies.remove('duocun-token-id');
+    }
     if (token) {
       Cookies.set('duocun-token-id', token, { expires: COOKIE_EXPIRY_DAYS });
     }

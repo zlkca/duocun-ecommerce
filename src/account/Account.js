@@ -18,7 +18,7 @@ export class Account extends React.Component {
     super(props);
 
     this.state = {
-      account: '',
+      account: null,
       lang: 'zh',
       orders: [],
       balance: 0
@@ -41,17 +41,18 @@ export class Account extends React.Component {
   }
 
   render() {
+    const account = this.state.account;
     return (
       <div className="page">
         {
-          this.state.account &&
+          account &&
           <div className="row head-block">
-            <div className="col-8 name-block title-bg">{this.state.account.username}</div>
+            <div className="col-8 name-block title-bg">{account.username}</div>
             <div className="col-4 portrait-block">
               {
-                this.state.account.imageurl &&
+                account.imageurl &&
                 <div className="portrait-frame">
-                  <img className="portrait" src={this.state.account.imageurl} />
+                  <img className="portrait" src={account.imageurl} />
                 </div>
               }
             </div>
@@ -59,9 +60,10 @@ export class Account extends React.Component {
 
         }
         {
+          account &&
           <div className="row balance-block" onClick={this.toBalancePage}>
             <div className="col-12 title-sm">当前余额</div>
-            <div className="col-12 title-bg">${this.state.balance}</div>
+            <div className="col-12 title-bg">${account.balance}</div>
             <div className="col-12 title-sm">
               <Link style={{ textDecoration: 'none' }} to={{ pathname: "/balance" }} >
               <span>查看明细</span>
@@ -74,16 +76,16 @@ export class Account extends React.Component {
           </div>
         }
         {
-          this.state.account &&
+          account &&
           <div className="row form-group">
             <div className="row label-sm">
               <span>电话号码</span><span>*</span>
             </div>
-            <div className="input" onClick={this.changePhoneNumber}>{this.state.account.phone}</div>
+            <div className="input" onClick={this.changePhoneNumber}>{account.phone}</div>
           </div>
         }
         {
-          this.state.account &&
+          account &&
           <div className="row form-group">
             <div className="row label-sm">
               <span>默认地址</span><span>*</span>
@@ -100,7 +102,7 @@ export class Account extends React.Component {
           <div className="btn btn-primary btn-logout" onClick={this.logout}>退出</div>
         </div>
 
-        <Footer select={this.select} type="menu" menu={Menu.ACCOUNT} accountId={this.state.account._id}></Footer>
+        <Footer select={this.select} type="menu" menu={Menu.ACCOUNT} accountId={account ? account._id : ''}></Footer>
       </div>
     )
   }

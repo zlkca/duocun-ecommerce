@@ -5,7 +5,7 @@ import { AddressInput } from '../common/AddressInput';
 import { AddressList } from '../common/AddressList';
 import { MerchantList } from '../merchant/MerchantList';
 import { Footer } from '../common/Footer';
-
+import { Progress } from '../common/Progress';
 import { updateLocation } from '../actions';
 
 import { AccountAPI } from '../account/API';
@@ -44,7 +44,7 @@ class Home extends React.Component {
     //   }
     // }
 
-    this.state = { account: '', addresses: [], address: null, keyword: '', bAddressList: false, merchants: [] };
+    this.state = { loading: false, account: '', addresses: [], address: null, keyword: '', bAddressList: false, merchants: [] };
     this.onAddressInputChange = this.onAddressInputChange.bind(this);
     this.onAddressInputClear = this.onAddressInputClear.bind(this);
     this.onAddressListSelect = this.onAddressListSelect.bind(this);
@@ -94,6 +94,10 @@ class Home extends React.Component {
     const account = this.state.account;
     return (
       <div className="page">
+        {
+          this.state.loading &&
+          <Progress></Progress>
+        }
         <div className="page-content">
           <AddressInput onChange={this.onAddressInputChange}
             onClear={this.onAddressInputClear}
@@ -122,6 +126,7 @@ class Home extends React.Component {
           resolve(account);
         } else {
           if (code) { // try wechat login
+            this.setState({loading: true});
             this.accountSvc.wxLogin(code).then(r => {
               if (r) {
                 this.accountSvc.setAccessTokenId(r.tokenId);
@@ -143,8 +148,9 @@ class Home extends React.Component {
     const a = search.substring(1);
     const cs = a.split('&')[0];
     const code = cs.split('=')[1];
+    
     this.login(code).then(account => {
-      this.setState({account});
+      this.setState({account, loading: false});
       if (account) {
         this.locationSvc.getHistoryAddressList({ accountId: account._id }).then(addresses => {
           this.historyLocations = addresses;

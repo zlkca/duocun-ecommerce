@@ -6,51 +6,55 @@ const DEFAULT_CART = [];
 const DEFAULT_LOCATION = {};
 const DEFAULT_MERCHANT = {};
 
-// state --- {productId, deliveries }
-// payload --- { productId, productName, date, time, quantity, price, cost }
-const updateQuantity = (state, payload, quantity) => {
+// state --- [{ product, deliveries:[{date, time, quantity}] }]
+// payload --- { product:{_id, price, cost, taxRate }, delivery: {date, time, quantity} }
+const updateQuantity = (state, payload) => {
+    const product = payload.product;
+    const date = payload.delivery.date;
+    const time = payload.delivery.time;
+    const quantity = payload.delivery.quantity;
 
-    const item = state.find(it => it.productId === payload.productId);
+    const item = state.find(it => it.product && it.product._id === product._id);
     if(item){
       let deliveries = [];
-      const found = item.deliveries.find(it => (it.date + it.time) === (payload.date + payload.time));
+      const found = item.deliveries.find(d => (d.date + d.time) === (date + time));
       if(found){
-        item.deliveries.map(it => {
-          if ((it.date + it.time) === (payload.date + payload.time)) {
-            deliveries.push({ ...it, quantity: quantity});
+        item.deliveries.map(d => {
+          if ((d.date + d.time) === (date + time)) {
+            deliveries.push({ ...d, quantity: quantity});
           } else {
-            deliveries.push(it);
+            deliveries.push(d);
           }
         });
       }else{
-        deliveries = [...item.deliveries, { ...payload, quantity: quantity }];
+        deliveries = [...item.deliveries, payload.delivery];
       }
       deliveries = deliveries.filter(d => d.quantity > 0);
-      const arr = state.filter(it => it.productId !== payload.productId);
-      return [...arr, { productId: payload.productId, productName: payload.productName, deliveries }];
+      const remain = state.filter(it => it.product && it.product._id !== product._id);
+      return [...remain, { product, deliveries }];
     }else{
-      const arr = state.filter(it => it.productId !== payload.productId);
-      const delivery = { ...payload, quantity: quantity };
-      delete delivery.productName;
+      const remain = state.filter(it => it.product._id !== product._id);
+      const delivery = { ...payload.delivery, quantity: quantity };
       const deliveries = [delivery];
-      return [...arr, { productId: payload.productId, productName: payload.productName, deliveries }];
+
+      return [...remain, { product, deliveries }];
     }
     // return state;
 }
 
-// action.payload - eg. {productId:x, date:'2020-03-10', time:'14:00', quantity: 2}
+// action.payload - eg. {product, delivery:{date, time, quantity}}
 export const cartReducer = (state = DEFAULT_CART, action) => {
   const payload = action.payload;
 
   switch (action.type) {
     case 'ADD_TO_CART':
-      return updateQuantity(state, payload, payload.quantity + 1);
+      return updateQuantity(state, payload);
 
     case 'REMOVE_FROM_CART':
-      return updateQuantity(state, payload, payload.quantity - 1);
+      return updateQuantity(state, payload);
 
     case 'CHANGE_QUANTITY':
-      return updateQuantity(state, payload, payload.quantity);
+      return updateQuantity(state, payload);
 
     default:
       return state;

@@ -1,6 +1,6 @@
 
 
-// item - eg. {productId:x, date:'2020-03-10', time:'14:00', quantity: 2}
+// item - {product:{_id, price, cost, taxRate }, delivery: {date, time, quantity} }
 export const addToCart = (item) => {
   return {
     type: 'ADD_TO_CART',
@@ -8,7 +8,7 @@ export const addToCart = (item) => {
   }
 }
 
-// item - eg. {productId:x, date:'2020-03-10', time:'14:00', quantity: 2}
+// item - {product:{_id, price, cost, taxRate }, delivery: {date, time, quantity} }
 export const removeFromCart = (item) => {
   return {
     type: 'REMOVE_FROM_CART',
@@ -16,7 +16,7 @@ export const removeFromCart = (item) => {
   }
 }
 
-// item - eg. {productId:x, date:'2020-03-10', time:'14:00', quantity: 2}
+// item - {product:{_id, price, cost, taxRate }, delivery: {date, time, quantity} }
 export const changeQuantity = (item) => {
   return {
     type: 'CHANGE_QUANTITY',

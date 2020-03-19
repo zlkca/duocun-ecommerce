@@ -1,58 +1,38 @@
 @import '../base';
 
-$list-h: 46px;
-// $border-color: #b1b1b1;
-  // .list-item{
-  //   border: 1px solid #aaa;
-  //   height: 480px;
-  //   overflow: scroll;
-  // }
+$list-h: 80px;
 
-  .list-item{
-    margin: 0px;
-    padding: 15px 0px;
-    height: $list-h;
-    background: $bg-color;
-    border-bottom: solid 1px $border-color;
-    z-index: 5000;
+.list-item{
+  margin: 0px;
+  padding: 15px 0px;
+  height: $list-h;
+  background: $bg-color;
+  border-bottom: solid 1px $border-color;
+  z-index: 5000;
+}
+
+.list-item:last-child{
+  border-bottom: none;
+}
+
+.left-col{
+  width: calc(100% - 60px);
+  padding-left: 15px;
+  padding-right: 5px;
+  float: left;
+  background: white;
+  .first-row, .second-row{
+    padding: 3px;
   }
+}
 
-  .list-item:last-child{
-    border-bottom: none;
-  }
-
-  .left-col{
-    width: calc(100% - 60px);
-    padding-left: 15px;
-    padding-right: 5px;
-    float: left;
-    background: white;
-    .first-row, .second-row{
-      padding: 3px;
-    }
-  }
-
-  .right-col{
-    width: 40px;
-    padding-left: 0px;
-    padding-right: 0px;
-    float: left;
-  }
-
-  // img.enter-icon{
-  //   width: 24px;
-  //   height: 24px;
-  //   border: none;
-  // }
-
-
-$cellphone: "(max-width:480px)";
-$mobile: "(max-width: 767px)";
-$tablet: "(min-width: 768px) and (max-width: 1199px)";
-$desktop: "(min-width: 1200px)";
+.right-col{
+  width: 40px;
+  padding-left: 0px;
+  padding-right: 0px;
+  float: left;
+}
 
 @media #{$mobile}{
-  // .list-item{
-  //   height: 460px;
-  // }
+
 }

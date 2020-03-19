@@ -61,15 +61,6 @@ export class CreditCardForm extends React.Component {
     this.props.onChange({e, stripe, card});
   }
 
-  componentDidMount() {
-    const {stripe, elements} = this.props;
-    // const merchantId = this.props.match.params.id;
-    // this.merchantSvc.getById(merchantId).then(merchant => {
-    //   this.productSvc.quickFind({merchantId},['_id', 'name', 'price']).then(products => {
-    //     this.setState({products, merchant});
-    //   });
-    // });
-  }
 }
 
 export class InjectedCheckoutForm extends React.Component {

@@ -1,0 +1,58 @@
+@import '../base.scss';
+
+$yellow: rgba(244, 160, 0, 0.2);
+$spinner-bg:rgb(69,69,69); //  #1abc9c;/*背景色 原#1abc9c */
+$spinner-opacity: 0.8;
+
+.loader-wrapper{
+  width: 100%;
+  height: 100%;
+  z-index: 99998;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background: $spinner-bg;
+  opacity: $spinner-opacity;
+}
+
+.loader {
+  z-index: 99999;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  opacity: 1;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -60px;
+  margin-left: -60px;
+}
+
+#load_title {
+  font-family: 'Open Sans';
+  color: #FFF;
+  font-size: 19px;
+  width: 100%;
+  text-align: center;
+  z-index: 99999;
+  position: absolute;
+  top: 60%;
+  opacity: 1;
+  line-height: 30px;
+  padding-top: 26px;
+  }
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

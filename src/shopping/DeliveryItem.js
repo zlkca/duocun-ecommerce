@@ -17,16 +17,13 @@ class DeliveryItem extends React.Component{
   }
 
   render(){
-    // const list = [
-    //   {dow: '本周5', date:'1月2日', bPassed:'true'},
-    //   {dow: '下周5', date:'1月9日', bPassed:'false'},
-    //   {dow: '', date:'1月16日', bPassed:'false'},
-    // ]
+    const delivery = this.props.delivery;
+    const quantity = this.state.quantity;
     return (
       <div className="row delivery-item">
         {/* this.props.list && this.props.list.length > 0 && */}
-        <DateItem className="date-col" item={this.props.delivery}></DateItem>
-        <QuantityInput className="quantity-col" val={this.props.delivery.quantity}
+        <DateItem className="date-col" date={delivery.date} time={delivery.time}></DateItem>
+        <QuantityInput className="quantity-col" quantity={quantity}
           onIncrease={this.increase}
           onDecrease={this.decrease}
           onChange={this.change}>
@@ -41,55 +38,39 @@ class DeliveryItem extends React.Component{
     // this.setState({selected: v});
   }
 
-  // actions --- addToCart
   // item - eg. {productId:x, date:'2020-03-10', time:'14:00', quantity: 2}
-  increase(oldQuantity){
+  increase(quantity){
     const product = this.props.product;
-    const delivery = this.props.delivery;
-    this.props.addToCart({
-      productId: product._id,
-      productName: product.name, 
-      date: delivery.date,
-      time: delivery.time,
-      quantity: oldQuantity,
-      price: delivery.price,
-      cost: delivery.cost,
+    const delivery = { ...this.props.delivery, ...{quantity} };
+    this.props.changeQuantity({
+      product,
+      delivery
     });
+    this.setState({quantity});
     this.props.onChange();
   }
 
-  // actions --- removeFromCart
   // item - eg. {productId:x, date:'2020-03-10', time:'14:00', quantity: 2}
-  decrease(oldQuantity){
+  decrease(quantity){
     const product = this.props.product;
-    const delivery = this.props.delivery;
-    this.props.removeFromCart({
-      productId: product._id,
-      productName: product.name, 
-      date: delivery.date,
-      time: delivery.time,
-      quantity: oldQuantity,
-      price: delivery.price,
-      cost: delivery.cost,
+    const delivery = { ...this.props.delivery, ...{quantity} };
+    this.props.changeQuantity({
+      product,
+      delivery
     });
+    this.setState({quantity});
     this.props.onChange();
   }
 
-  // actions --- removeFromCart
   // item - eg. {productId:x, date:'2020-03-10', time:'14:00', quantity: 2}
   change(quantity){
     const product = this.props.product;
-    const delivery = this.props.delivery;
+    const delivery = { ...this.props.delivery, ...{quantity} };
     this.props.changeQuantity({
-      productId: product._id,
-      productName: product.name, 
-      date: delivery.date,
-      time: delivery.time,
-      quantity,
-      price: delivery.price,
-      cost: delivery.cost,
+      product,
+      delivery
     });
-
+    this.setState({quantity});
     this.props.onChange();
   }
 }

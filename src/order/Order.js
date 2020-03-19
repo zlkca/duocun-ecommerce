@@ -3,7 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 
 import './Order.scss';
 import { Footer } from '../common/Footer';
-// import {ProductAPI} from '../product/API';
+import {PaymentMethod, PaymentStatus, PaymentError} from '../payment/API';
 // import {MerchantAPI} from '../merchant/API';
 import { Charge } from './Charge';
 import { store } from '..';
@@ -18,7 +18,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { OrderAPI } from './API';
 import { ProductAPI } from '../product/API';
 import { AccountAPI } from '../account/API';
-import { PaymentMethod, OrderType, OrderStatus, PaymentStatus, PaymentError } from './Model';
+import { OrderType, OrderStatus } from './Model';
 import { Phone } from '../account/Phone';
 
 const stripePromise = loadStripe('pk_test_IQkfGbooEHrkJ90xj3fMjxwM');
@@ -36,7 +36,7 @@ export class Order extends React.Component {
     const s = store.getState();
     const location = s.location;
     const merchant = s.merchant;
-    const chargeItems = this.getChargeItems(s.cart); // group --- [{date, time, items: [{productId, quantity, price, cost}] }]
+    const chargeItems = this.getChargeItems(s.cart); // [{date, time, quantity, _id, name, price, cost, taxRate}] }]
     this.groups = this.getOrderGroups(s.cart);
     this.summary = this.getSummary(this.groups, 0);
     this.state = {
@@ -209,7 +209,7 @@ export class Order extends React.Component {
   componentDidMount() {
     if (this.state.merchant) {
       const merchantId = this.state.merchant._id;
-      this.productSvc.quickFind({ merchantId }, ['_id', 'name', 'price']).then(products => {
+      this.productSvc.quickFind({ merchantId }, ['_id', 'name', 'price', 'taxRate']).then(products => {
         this.accountSvc.getCurrentAccount().then(account => {
           const amount = this.summary.total;
           const paymentMethod = (account.balance >= amount) ? PaymentMethod.PREPAY : this.state.paymentMethod;
@@ -220,42 +220,40 @@ export class Order extends React.Component {
     }
   }
 
-  // cart --- [{productId, productName, deliveries: [{date, time, price, cost, quantity}] }]
-  // return --- {date, time, productId, productName, quantity, price, cost}
-  getChargeItems(groups) { // group by date time
+  // cart --- [{product, deliveries: [{date, time, quantity}] }]
+  // return --- {date, time, _id, name, quantity, price, cost}
+  getChargeItems(cart) { // group by date time
     const chargeItems = [];
-    groups.map(it => { //  {productId, productName, deliveries:[{date, time, price, quantity }]}
+    cart.map(it => { //  {product, deliveries:[{date, time, quantity}]}
       it.deliveries.map(d => {
-        chargeItems.push({ ...d, productName: it.productName });
-        // const chargeItem = chargeItems.find(t => t.date === d.date && t.time === d.time);
-        // if (chargeItem) {
-        //   chargeItem.items.push({ productId: it.productId, productName: it.productName, quantity: d.quantity, price: d.price, cost: d.cost });
-        // } else {
-        //   chargeItems.push({ date: d.date, time: d.time, items: [{ productId: it.productId, productName: it.productName, quantity: d.quantity, price: d.price, cost: d.cost }] })
-        // }
+        chargeItems.push({ ...d, ...it.product });
       });
     });
     return chargeItems;
   }
 
-  // cart --- [{productId, productName, deliveries: [{date, time, price, cost, quantity}] }]
+  // cart --- [{product, deliveries: [{date, time, quantity}] }]
   // return --- [{date, time, items: [{productId, quantity, price, cost}] }]
-  getOrderGroups(groups) { // group by date time
+  getOrderGroups(cart) { // group by date time
     const orders = [];
-    groups.map(it => { //  {productId, deliveries:[{date, time, price, quantity }]}
+    cart.map(it => { //  {product, deliveries:[{date, time, quantity }]}
       it.deliveries.map(d => {
         const order = orders.find(t => t.date === d.date && t.time === d.time);
         if (order) {
-          order.items.push({ productId: it.productId, quantity: d.quantity, price: d.price, cost: d.cost });
+          order.items.push({ productId: it.product._id, quantity: d.quantity, price: it.product.price, cost: it.product.cost, taxRate: it.product.taxRate });
         } else {
-          orders.push({ date: d.date, time: d.time, items: [{ productId: it.productId, quantity: d.quantity, price: d.price, cost: d.cost }] })
+          orders.push({ 
+            date: d.date, 
+            time: d.time,
+            items: [{ productId: it.product._id, quantity: d.quantity, price: it.product.price, cost: it.product.cost, taxRate: it.product.taxRate }]
+          });
         }
       });
     });
     return orders;
   }
 
-  // groups --- [{date, time, items: [{productId, quantity, price, cost}] }]
+  // groups --- [{date, time, items: [{productId, quantity, price, cost, taxRate}] }]
   getSummary(groups, overRangeCharge) {
     let totalPrice = 0;
     let totalCost = 0;
@@ -271,14 +269,14 @@ export class Order extends React.Component {
       groups.map(order => {
         let price = 0;
         let cost = 0;
+        let tax = 0;
         order.items.map(x => {
           price += x.price * x.quantity;
           cost += x.cost * x.quantity;
+          tax += Math.ceil(x.price * x.quantity * x.taxRate) / 100;
         });
-        let tax = 0; // Math.ceil(price * 13) / 100;
         let subTotal = (price + tax + tips - groupDiscount + overRangeCharge);
-
-        totalPrice += total;
+        totalPrice += price;
         totalCost += cost;
         totalTax += tax;
         totalOverRangeCharge += overRangeCharge;
@@ -302,14 +300,14 @@ export class Order extends React.Component {
   getCharge(group, overRangeCharge) {
     let price = 0;
     let cost = 0;
+    let tax = 0;
 
     group.items.map(x => {
       price += x.price * x.quantity;
       cost += x.cost * x.quantity;
+      tax += Math.ceil(x.price * x.quantity * x.taxRate) / 100;
     });
 
-    const subTotal = price + 0; // merchant.deliveryCost;
-    const tax = Math.ceil(subTotal * 13) / 100;
     const tips = 0;
     const groupDiscount = 0;
     const overRangeTotal = Math.round(overRangeCharge * 100) / 100;

@@ -1,7 +1,6 @@
 import React from 'react';
 import './PaymentMethodSelect.scss';
-import { PaymentMethod } from '../order/Model';
-
+import {PaymentMethod} from '../payment/API';
 export class PaymentMethodSelect extends React.Component {
 
   constructor(props) {

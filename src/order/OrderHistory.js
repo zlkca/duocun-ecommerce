@@ -2,7 +2,7 @@ import React from 'react';
 import './OrderHistory.scss';
 import * as moment from 'moment';
 import Pagination from 'react-js-pagination';
-
+import { Progress } from '../common/Progress';
 import { Footer } from '../common/Footer';
 import { OrderHistoryItem } from './OrderHistoryItem';
 import { OrderAPI } from './API';
@@ -33,7 +33,8 @@ export class OrderHistory extends React.Component {
       account: '',
       lang: 'zh',
       orders: [],
-      activePage: 1
+      activePage: 1,
+      loading: false
     };
     this.handlePageChange = this.handlePageChange.bind(this);
     this.getDescription = this.getDescription.bind(this);
@@ -77,22 +78,18 @@ export class OrderHistory extends React.Component {
   }
 
   render() {
-    const charge = {
-      price: 10, deliveryCost: 0, deliveryDiscount: 0,
-      tax: 0.13 * 10, tips: 0, total: Math.round(10 * 1.13 / 100) * 100, overRangeCharge: 0, balance: 1,
-      payable: 9
-    };
+    const orders = this.state.orders;
     return (
+
       <div className="page">
+      {
+        this.state.loading &&
+        <Progress></Progress>
+      }
         <div className="title-row">订单历史</div>
         <div className="page-body">
-
-          {/* <div className="loading-spinner" *ngIf="loading">
-  <app-progress-spinner></app-progress-spinner>
-</div> */}
-
           {
-            this.state.orders && this.state.orders.length === 0 &&
+            !orders || orders.length === 0 &&
             <div className="empty-order">
               <div className="order-image">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -105,7 +102,7 @@ export class OrderHistory extends React.Component {
           }
 
           {
-            this.state.orders && this.state.orders.length > 0 &&
+            orders && orders.length > 0 &&
             <div className="order-list">
             {
               this.state.orders.map(order => 
@@ -115,13 +112,16 @@ export class OrderHistory extends React.Component {
             </div>
           }
 
-          <Pagination
-          activePage={this.state.activePage}
-          itemsCountPerPage={this.itemsPerPage}
-          totalItemsCount={this.nOrders}
-          pageRangeDisplayed={5}
-          onChange={this.handlePageChange.bind(this)}
-          />
+          {
+            orders && orders.length > 0 &&
+            <Pagination
+            activePage={this.state.activePage}
+            itemsCountPerPage={this.itemsPerPage}
+            totalItemsCount={this.nOrders}
+            pageRangeDisplayed={5}
+            onChange={this.handlePageChange.bind(this)}
+            />
+          }
 
       </div>
       <Footer select={this.select} type="menu" menu={Menu.ORDER_HISTORY}></Footer>
@@ -151,27 +151,6 @@ export class OrderHistory extends React.Component {
 
         this.nOrders = ret.total;
         this.setState({loading: false, orders: ret.orders, activePage: pageNumber});
-      });
-
-      this.orderSvc.joinFind({ clientId: accountId }).then(rs => {
-        const orders = rs.sort((a, b) => {
-          const ma = moment(a.delivered).set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
-          const mb = moment(b.delivered).set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
-          if (ma.isAfter(mb)) {
-            return -1;
-          } else if (mb.isAfter(ma)) {
-            return 1;
-          } else {
-            const ca = moment(a.created);
-            const cb = moment(b.created);
-            if (ca.isAfter(cb)) {
-              return -1;
-            } else {
-              return 1;
-            }
-          }
-        });
-        this.setState({ orders });
       });
     }
   }

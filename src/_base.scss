@@ -20,7 +20,7 @@ $head-h: 60px;
 $bottom-bar-h: 60px;
 $bottom-btn-w: 125px;
 
-$pagination-h: 32px;
+$pagination-h: 36px;
 
 .page{
   position: fixed;
@@ -70,17 +70,31 @@ $pagination-h: 32px;
 ul.pagination{
   padding-top: 8px;
   li{
-    width: 30px;
-    font-size: 18px;
+    width: 36px;
+    font-size: 19px;
   }
 }
 
 @media #{$tablet}{
+  .bottom-bar{
+    border-right: none;
+    border-left: none;
+  }
+
+  .page-body{
+    padding: 10px;
+    margin: 0px;
+  }
 }
 
 @media #{$mobile}{
   .bottom-bar{
     border-right: none;
     border-left: none;
+  }
+
+  .page-body{
+    padding: 10px;
+    margin: 0px;
   }
 }
