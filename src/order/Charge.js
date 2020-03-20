@@ -5,8 +5,6 @@ import { Footer } from '../common/Footer';
 // import {MerchantAPI} from '../merchant/API';
 
 export class Charge extends React.Component {
-  // productSvc = new ProductAPI();
-  // merchantSvc = new MerchantAPI();
 
   constructor(props) {
     super(props);
